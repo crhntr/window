@@ -196,10 +196,6 @@ func (el Element) QuerySelectorAll(query string, args ...interface{}) []Element 
 	return elements
 }
 
-type EventListenerOptions struct {
-	Capture, Once, Passive bool
-}
-
 func (el Element) AddEventListener(eventName string, listener EventListener) {
 	el.Call("addEventListener", eventName, js.FuncOf(func(_ js.Value, args []js.Value) interface{} {
 		listener.HandleEvent(Event(args[0]))
