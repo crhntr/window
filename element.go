@@ -150,6 +150,10 @@ func (el Element) ChildCount() int {
 	return el.Get("childElementCount").Int()
 }
 
+func (el Element) AppendChild(child Element) {
+	el.Call("appendChild", child)
+}
+
 func (el Element) Matches(query string) bool {
 	return el.Call("matches", query).Bool()
 }
