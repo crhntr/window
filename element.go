@@ -154,6 +154,10 @@ func (el Element) Matches(query string) bool {
 	return el.Call("matches", query).Bool()
 }
 
+func (el Element) Closest(query string) Element {
+	return Element(el.Call("closest", query))
+}
+
 func (el Element) QuerySelector(query string, args ...interface{}) (child Element, err error) {
 	defer func() {
 		if r := recover(); r != nil {
