@@ -162,26 +162,18 @@ func (el Element) Closest(query string) Element {
 	return Element(el.Call("closest", query))
 }
 
-func (el Element) QuerySelector(query string, args ...interface{}) (child Element, err error) {
+func (el Element) QuerySelector(query string, args ...interface{}) Element {
+	query = fmt.Sprintf(query, args...)
+
 	defer func() {
 		if r := recover(); r != nil {
-			var ok bool
-			if err, ok = r.(js.Error); !ok {
-				panic(r)
+			if err, ok := r.(js.Error); ok {
+				panic(fmt.Errorf("query selector falied for %q: %w", query, err))
 			}
 		}
 	}()
 
-	query = fmt.Sprintf(query, args...)
-
-	v := el.Call("querySelector", query)
-	child = Element(v)
-
-	if !v.Truthy() {
-		return Element(js.Null()), fmt.Errorf("query failed to find element matching selector: %q", query)
-	}
-
-	return child, nil
+	return Element(el.Call("querySelector", query))
 }
 
 func (el Element) QuerySelectorAll(query string, args ...interface{}) []Element {
@@ -189,15 +181,21 @@ func (el Element) QuerySelectorAll(query string, args ...interface{}) []Element 
 
 	query = fmt.Sprintf(query, args...)
 
+	defer func() {
+		if r := recover(); r != nil {
+			if err, ok := r.(js.Error); ok {
+				panic(fmt.Errorf("query selector falied for %q: %w", query, err))
+			}
+		}
+	}()
+
 	matches := el.Call("querySelectorAll", query)
 
 	if !matches.Truthy() {
 		return nil
 	}
 
-	length := matches.Length()
-
-	for index := 0; index < length; index++ {
+	for index := 0; index < matches.Length(); index++ {
 		elements = append(elements, Element(matches.Index(index)))
 	}
 
