@@ -32,3 +32,9 @@ func (el document) AddEventListener(eventName string, listener EventListener) {
 func (el document) AddEventListenerFunc(eventName string, listener EventListenerFunc) {
 	el.AddEventListener(eventName, listener)
 }
+
+func (el document) AddEventListenerChannel(eventName string, c chan Event) {
+	el.AddEventListenerFunc(eventName, func(event Event) {
+		c <- event
+	})
+}

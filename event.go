@@ -18,6 +18,8 @@ func (el Event) JSValue() js.Value { return js.Value(el) }
 
 func (el Event) Type() js.Type { return js.Value(el).Type() }
 
+func (el Event) EventType() string { return js.Value(el).Get("type").String() }
+
 func (el Event) Truthy() bool { return js.Value(el).Truthy() }
 
 func (el Event) IsNull() bool { return js.Value(el).IsNull() }
