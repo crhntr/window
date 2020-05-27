@@ -30,6 +30,8 @@ func (el Event) InstanceOf(t js.Value) bool { return js.Value(el).InstanceOf(t) 
 
 func (el Event) Target() Element { return Element(el.Get("target")) }
 
+func (el Event) PreventDefault() { el.Call("preventDefault") }
+
 type EventListener interface {
 	HandleEvent(event Event)
 }
