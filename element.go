@@ -232,3 +232,7 @@ func (el Element) Parent() Element {
 	}
 	return Element(el.Get("parentElement"))
 }
+
+func (el Element) Log() {
+	js.Global().Get("console").Call("log", el)
+}

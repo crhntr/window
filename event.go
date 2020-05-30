@@ -32,6 +32,8 @@ func (el Event) Target() Element { return Element(el.Get("target")) }
 
 func (el Event) PreventDefault() { el.Call("preventDefault") }
 
+func (el Event) Log() { js.Global().Get("console").Call("log", el) }
+
 type EventListener interface {
 	HandleEvent(event Event)
 }
