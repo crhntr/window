@@ -7,13 +7,16 @@ import (
 )
 
 type document byte
+type window byte
 
 const (
 	Document document = 0
+	Window   window   = 0
 )
 
 var (
 	doc = js.Global().Get("document")
+	win = js.Global()
 )
 
 func (_ document) JSValue() js.Value                           { return doc }
@@ -34,6 +37,29 @@ func (el document) AddEventListenerFunc(eventName string, listener EventListener
 }
 
 func (el document) AddEventListenerChannel(eventName string, c chan Event) {
+	el.AddEventListenerFunc(eventName, func(event Event) {
+		c <- event
+	})
+}
+
+func (_ window) JSValue() js.Value                           { return win }
+func (_ window) Get(key string) js.Value                     { return win.Get(key) }
+func (_ window) Set(key string, value interface{})           { win.Set(key, value) }
+func (_ window) Call(m string, args ...interface{}) js.Value { return win.Call(m, args...) }
+func (_ window) Type() js.Type                               { return win.Type() }
+
+func (el window) AddEventListener(eventName string, listener EventListener) {
+	el.Call("addEventListener", eventName, js.FuncOf(func(_ js.Value, args []js.Value) interface{} {
+		listener.HandleEvent(Event(args[0]))
+		return nil
+	}))
+}
+
+func (el window) AddEventListenerFunc(eventName string, listener EventListenerFunc) {
+	el.AddEventListener(eventName, listener)
+}
+
+func (el window) AddEventListenerChannel(eventName string, c chan Event) {
 	el.AddEventListenerFunc(eventName, func(event Event) {
 		c <- event
 	})
