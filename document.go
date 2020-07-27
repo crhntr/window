@@ -14,25 +14,25 @@ const (
 
 var doc = js.Global().Get("document")
 
-func (_ document) JSValue() js.Value                           { return doc }
-func (_ document) Get(key string) js.Value                     { return doc.Get(key) }
-func (_ document) Set(key string, value interface{})           { doc.Set(key, value) }
-func (_ document) Call(m string, args ...interface{}) js.Value { return doc.Call(m, args...) }
-func (_ document) Type() js.Type                               { return doc.Type() }
+func (document document) JSValue() js.Value                           { return doc }
+func (document document) Get(key string) js.Value                     { return doc.Get(key) }
+func (document document) Set(key string, value interface{})           { doc.Set(key, value) }
+func (document document) Call(m string, args ...interface{}) js.Value { return doc.Call(m, args...) }
+func (document document) Type() js.Type                               { return doc.Type() }
 
-func (el document) AddEventListener(eventName string, listener EventListener) {
-	el.Call("addEventListener", eventName, js.FuncOf(func(_ js.Value, args []js.Value) interface{} {
+func (document document) AddEventListener(eventName string, listener EventListener) {
+	document.Call("addEventListener", eventName, js.FuncOf(func(_ js.Value, args []js.Value) interface{} {
 		listener.HandleEvent(Event(args[0]))
 		return nil
 	}))
 }
 
-func (el document) AddEventListenerFunc(eventName string, listener EventListenerFunc) {
-	el.AddEventListener(eventName, listener)
+func (document document) AddEventListenerFunc(eventName string, listener EventListenerFunc) {
+	document.AddEventListener(eventName, listener)
 }
 
-func (el document) AddEventListenerChannel(eventName string, c chan Event) {
-	el.AddEventListenerFunc(eventName, func(event Event) {
+func (document document) AddEventListenerChannel(eventName string, c chan Event) {
+	document.AddEventListenerFunc(eventName, func(event Event) {
 		c <- event
 	})
 }

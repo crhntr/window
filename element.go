@@ -12,18 +12,14 @@ import (
 
 type Element js.Value
 
-func Body() Element {
-	return Element(Document.Call("getElementsByTagName", "body").Index(0))
-}
-
-func NewElementFromTemplate(tmp *template.Template, name string, data interface{}) (Element, error) {
+func (document document) NewElementFromTemplate(tmp *template.Template, name string, data interface{}) (Element, error) {
 	buf := bytes.NewBuffer(nil)
 	err := tmp.ExecuteTemplate(buf, name, data)
 	if err != nil {
 		return Element(js.Null()), err
 	}
 
-	div := Document.Call("createElement", "div")
+	div := document.Call("createElement", "div")
 	div.Set("innerHTML", strings.TrimSpace(buf.String()))
 
 	v := div.Get("firstChild")
@@ -34,8 +30,8 @@ func NewElementFromTemplate(tmp *template.Template, name string, data interface{
 	return Element(v), nil
 }
 
-func NewElement(format string, vs ...interface{}) (Element, error) {
-	tmp := Document.Call("createElement", "div")
+func (document document) NewElement(format string, vs ...interface{}) (Element, error) {
+	tmp := document.Call("createElement", "div")
 	tmp.Set("innerHTML", strings.TrimSpace(fmt.Sprintf(format, vs...)))
 
 	v := tmp.Get("firstChild")
@@ -46,15 +42,15 @@ func NewElement(format string, vs ...interface{}) (Element, error) {
 	return Element(v), nil
 }
 
-func GetElementByID(id string) Element {
-	v := Document.Call("getElementById", id)
+func (document document) GetElementByID(id string) Element {
+	v := document.Call("getElementById", id)
 	if !v.Truthy() {
 		return Element(js.Null())
 	}
 	return Element(v)
 }
 
-func QuerySelector(query string, args ...interface{}) Element {
+func (document document) QuerySelector(query string, args ...interface{}) Element {
 	query = fmt.Sprintf(query, args...)
 
 	defer func() {
@@ -65,10 +61,10 @@ func QuerySelector(query string, args ...interface{}) Element {
 		}
 	}()
 
-	return Element(Document.Call("querySelector", query))
+	return Element(document.Call("querySelector", query))
 }
 
-func QuerySelectorAll(query string, args ...interface{}) []Element {
+func (document document) QuerySelectorAll(query string, args ...interface{}) []Element {
 	query = fmt.Sprintf(query, args...)
 
 	defer func() {
@@ -79,7 +75,7 @@ func QuerySelectorAll(query string, args ...interface{}) []Element {
 		}
 	}()
 
-	matches := Document.Call("querySelectorAll", query)
+	matches := document.Call("querySelectorAll", query)
 
 	if !matches.Truthy() {
 		return nil
