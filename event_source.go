@@ -16,8 +16,8 @@ type EventSource struct {
 	LogEvents bool
 }
 
-func NewEventSource(universalResourceIdentifier string) (*EventSource, error) {
-	esv := js.Global().Get("EventSource").New(universalResourceIdentifier)
+func NewEventSource(srcURL string) (*EventSource, error) {
+	esv := js.Global().Get("EventSource").New(srcURL)
 
 	if !esv.Truthy() {
 		return nil, errors.New("created object is falsy")
@@ -30,8 +30,8 @@ func NewEventSource(universalResourceIdentifier string) (*EventSource, error) {
 	}, nil
 }
 
-func (es *EventSource) Handle(eventName string, handler ServerEventHandlerFunc) {
-	es.Call("addEventListener", eventName, js.FuncOf(func(_ js.Value, args []js.Value) interface{} {
+func (es *EventSource) Handle(eventName string, handler ServerEventHandlerFunc) func() {
+	fn := js.FuncOf(func(_ js.Value, args []js.Value) interface{} {
 		msg := args[0]
 
 		data := msg.Get("data").String()
@@ -44,5 +44,11 @@ func (es *EventSource) Handle(eventName string, handler ServerEventHandlerFunc) 
 		}
 
 		return nil
-	}))
+	})
+
+	es.Call("addEventListener", eventName, fn)
+
+	return func() {
+		es.Call("removeEventListener", eventName, fn)
+	}
 }

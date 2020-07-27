@@ -54,30 +54,30 @@ func GetElementByID(id string) Element {
 	return Element(v)
 }
 
-func QuerySelector(query string, args ...interface{}) (_ Element, err error) {
+func QuerySelector(query string, args ...interface{}) Element {
+	query = fmt.Sprintf(query, args...)
+
 	defer func() {
 		if r := recover(); r != nil {
-			var ok bool
-			if err, ok = r.(js.Error); !ok {
-				panic(r)
+			if err, ok := r.(js.Error); ok {
+				panic(fmt.Errorf("query selector failed for %q: %w", query, err))
 			}
 		}
 	}()
 
-	query = fmt.Sprintf(query, args...)
-
-	v := Document.Call("querySelector", query)
-
-	if !v.Truthy() {
-		return Element(js.Null()), fmt.Errorf("query failed to find element matching selector: %q", query)
-	}
-	return Element(v), nil
+	return Element(Document.Call("querySelector", query))
 }
 
 func QuerySelectorAll(query string, args ...interface{}) []Element {
-	var elements []Element
-
 	query = fmt.Sprintf(query, args...)
+
+	defer func() {
+		if r := recover(); r != nil {
+			if err, ok := r.(js.Error); ok {
+				panic(fmt.Errorf("query selector failed for %q: %w", query, err))
+			}
+		}
+	}()
 
 	matches := Document.Call("querySelectorAll", query)
 
@@ -87,8 +87,10 @@ func QuerySelectorAll(query string, args ...interface{}) []Element {
 
 	length := matches.Length()
 
+	elements := make([]Element, length)
+
 	for index := 0; index < length; index++ {
-		elements = append(elements, Element(matches.Index(index)))
+		elements[index] = Element(matches.Index(index))
 	}
 
 	return elements
@@ -168,7 +170,7 @@ func (el Element) QuerySelector(query string, args ...interface{}) Element {
 	defer func() {
 		if r := recover(); r != nil {
 			if err, ok := r.(js.Error); ok {
-				panic(fmt.Errorf("query selector falied for %q: %w", query, err))
+				panic(fmt.Errorf("query selector failed for %q: %w", query, err))
 			}
 		}
 	}()
@@ -184,7 +186,7 @@ func (el Element) QuerySelectorAll(query string, args ...interface{}) []Element 
 	defer func() {
 		if r := recover(); r != nil {
 			if err, ok := r.(js.Error); ok {
-				panic(fmt.Errorf("query selector falied for %q: %w", query, err))
+				panic(fmt.Errorf("query selector failed for %q: %w", query, err))
 			}
 		}
 	}()

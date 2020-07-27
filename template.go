@@ -10,12 +10,12 @@ func LoadTemplates(tmp *template.Template, selector string) (*template.Template,
 	if tmp == nil {
 		tmp = template.New("")
 	}
+
 	if selector == "" {
 		selector = "script[type=text/go-template]"
 	}
 
-	list := QuerySelectorAll(selector)
-	for _, el := range list {
+	for _, el := range QuerySelectorAll(selector) {
 		var err error
 		tmp, err = tmp.New(el.Attribute("id")).Parse(el.InnerHTML())
 		if err != nil {

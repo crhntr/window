@@ -2,6 +2,10 @@
 
 package window
 
+import (
+	"syscall/js"
+)
+
 var win = js.Global()
 
 func JSValue() js.Value                           { return win }
@@ -18,11 +22,11 @@ func AddEventListener(eventName string, listener EventListener) {
 }
 
 func AddEventListenerFunc(eventName string, listener EventListenerFunc) {
-	win.AddEventListener(eventName, listener)
+	AddEventListener(eventName, listener)
 }
 
 func AddEventListenerChannel(eventName string, c chan Event) {
-	win.AddEventListenerFunc(eventName, func(event Event) {
+	AddEventListenerFunc(eventName, func(event Event) {
 		c <- event
 	})
 }
