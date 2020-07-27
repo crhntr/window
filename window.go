@@ -3,6 +3,7 @@
 package window
 
 import (
+	"net/url"
 	"syscall/js"
 )
 
@@ -29,4 +30,8 @@ func AddEventListenerChannel(eventName string, c chan Event) {
 	AddEventListenerFunc(eventName, func(event Event) {
 		c <- event
 	})
+}
+
+func URL() (*url.URL, error) {
+	return url.Parse(Get("location").Get("href").String())
 }
