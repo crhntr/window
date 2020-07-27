@@ -1,6 +1,6 @@
 // +build js,wasm
 
-package dom
+package window
 
 import (
 	"syscall/js"
