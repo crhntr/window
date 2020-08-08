@@ -152,6 +152,17 @@ func (el Element) AppendChild(child Element) {
 	el.Call("appendChild", child)
 }
 
+// Prepend inserts elements before the first child of the Element
+// https://developer.mozilla.org/en-US/docs/Web/API/ParentNode/prepend
+func (el Element) Prepend(elements ...Element) {
+	if len(elements) == 0 {
+		return
+	}
+	args := make([]interface{}, len(elements))
+	toInterfaceSlice(args, elements)
+	el.Call("prepend", args...)
+}
+
 func (el Element) Matches(query string) bool {
 	return el.Call("matches", query).Bool()
 }
@@ -233,4 +244,10 @@ func (el Element) Parent() Element {
 
 func (el Element) Log() {
 	js.Global().Get("console").Call("log", el)
+}
+
+func toInterfaceSlice(dst []interface{}, slice []Element) {
+	for i := range slice {
+		dst[i] = slice[i]
+	}
 }
