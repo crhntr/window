@@ -30,16 +30,18 @@ func (document document) NewElementFromTemplate(tmp *template.Template, name str
 	return Element(v), nil
 }
 
-func (document document) NewElement(format string, vs ...interface{}) (Element, error) {
+// NewElement creates a new element from the format string and a call to fmt.Sprintf
+// callers should ensure the element was created successfully
+//
+//  el = Document.NewElement(`<div class=%[2]q>Hello, %[1]s!</div>`, "world", "greeting")
+//  if !el.Truthy() {
+//    // handle error
+//  }
+//
+func (document document) NewElement(format string, vs ...interface{}) Element {
 	tmp := document.Call("createElement", "div")
 	tmp.Set("innerHTML", strings.TrimSpace(fmt.Sprintf(format, vs...)))
-
-	v := tmp.Get("firstChild")
-	if !v.Truthy() {
-		return Element(js.Null()), fmt.Errorf("could not get created element")
-	}
-
-	return Element(v), nil
+	return Element(tmp.Get("firstChild"))
 }
 
 func (document document) GetElementByID(id string) Element {
