@@ -34,6 +34,9 @@ func (el Event) PreventDefault() { el.Call("preventDefault") }
 
 func (el Event) Log() { js.Global().Get("console").Call("log", el) }
 
+// KeyCode can be used on keyup and keydown events
+func (el Event) KeyCode() int { return el.Get("keyCode").Int() }
+
 type EventListener interface {
 	HandleEvent(event Event)
 }
