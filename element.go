@@ -165,6 +165,12 @@ func (el Element) Prepend(elements ...Element) {
 	el.Call("prepend", args...)
 }
 
+// ReplaceChild should only be called if the caller is sure
+// existingChild exists.
+func (el Element) ReplaceChild(newChild, existingChild Element) {
+	el.Call("replaceChild", newChild, existingChild)
+}
+
 func (el Element) Matches(query string) bool {
 	return el.Call("matches", query).Bool()
 }
