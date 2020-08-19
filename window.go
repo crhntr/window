@@ -16,19 +16,26 @@ func Set(key string, value interface{})           { win.Set(key, value) }
 func Call(m string, args ...interface{}) js.Value { return win.Call(m, args...) }
 func Type() js.Type                               { return win.Type() }
 
-func AddEventListener(eventName string, listener EventListener) {
-	win.Call("addEventListener", eventName, js.FuncOf(func(_ js.Value, args []js.Value) interface{} {
+// AddEventListener should be called once per eventName. It returns a wrapper around "removeEventListener".
+func AddEventListener(eventName string, listener EventListener) func() {
+	fn := js.FuncOf(func(_ js.Value, args []js.Value) interface{} {
 		listener.HandleEvent(Event(args[0]))
 		return nil
-	}))
+	})
+
+	win.Call("addEventListener", eventName, fn)
+
+	return func() {
+		win.Call("removeEventListener", eventName, fn)
+	}
 }
 
-func AddEventListenerFunc(eventName string, listener EventListenerFunc) {
-	AddEventListener(eventName, listener)
+func AddEventListenerFunc(eventName string, listener EventListenerFunc) func() {
+	return AddEventListener(eventName, listener)
 }
 
-func AddEventListenerChannel(eventName string, c chan Event) {
-	AddEventListenerFunc(eventName, func(event Event) {
+func AddEventListenerChannel(eventName string, c chan Event) func() {
+	return AddEventListenerFunc(eventName, func(event Event) {
 		c <- event
 	})
 }
