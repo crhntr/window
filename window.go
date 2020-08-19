@@ -11,6 +11,7 @@ var win = js.Global()
 
 func JSValue() js.Value                           { return win }
 func Get(key string) js.Value                     { return win.Get(key) }
+func Delete(key string)                           { win.Delete(key) }
 func Set(key string, value interface{})           { win.Set(key, value) }
 func Call(m string, args ...interface{}) js.Value { return win.Call(m, args...) }
 func Type() js.Type                               { return win.Type() }
