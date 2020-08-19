@@ -49,6 +49,8 @@ func (es *EventSource) Handle(eventName string, handler ServerEventHandlerFunc) 
 	es.Call("addEventListener", eventName, fn)
 
 	return func() {
+		defer fn.Release()
+
 		es.Call("removeEventListener", eventName, fn)
 	}
 }
