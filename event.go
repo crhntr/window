@@ -42,3 +42,5 @@ type EventListener interface {
 }
 
 type EventListenerFunc func(Event)
+
+func (fn EventListenerFunc) HandleEvent(event Event) { fn(event) }

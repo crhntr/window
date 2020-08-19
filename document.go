@@ -20,19 +20,26 @@ func (document document) Set(key string, value interface{})           { doc.Set(
 func (document document) Call(m string, args ...interface{}) js.Value { return doc.Call(m, args...) }
 func (document document) Type() js.Type                               { return doc.Type() }
 
-func (document document) AddEventListener(eventName string, listener EventListener) {
-	document.Call("addEventListener", eventName, js.FuncOf(func(_ js.Value, args []js.Value) interface{} {
+func (document document) AddEventListener(eventName string, listener EventListener) func() {
+	fn := js.FuncOf(func(_ js.Value, args []js.Value) interface{} {
 		listener.HandleEvent(Event(args[0]))
 		return nil
-	}))
+	})
+
+	win.Call("addEventListener", eventName, fn)
+
+	return func() {
+		defer fn.Release()
+		win.Call("removeEventListener", eventName, fn)
+	}
 }
 
-func (document document) AddEventListenerFunc(eventName string, listener EventListenerFunc) {
-	document.AddEventListener(eventName, listener)
+func (document document) AddEventListenerFunc(eventName string, listener EventListenerFunc) func() {
+	return document.AddEventListener(eventName, listener)
 }
 
-func (document document) AddEventListenerChannel(eventName string, c chan Event) {
-	document.AddEventListenerFunc(eventName, func(event Event) {
+func (document document) AddEventListenerChannel(eventName string, c chan Event) func() {
+	return document.AddEventListenerFunc(eventName, func(event Event) {
 		c <- event
 	})
 }

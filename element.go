@@ -219,17 +219,28 @@ func (el Element) QuerySelectorAll(query string, args ...interface{}) []Element 
 	return elements
 }
 
-func (el Element) AddEventListener(eventName string, listener EventListener) {
-	el.Call("addEventListener", eventName, js.FuncOf(func(_ js.Value, args []js.Value) interface{} {
+func (el Element) AddEventListener(eventName string, listener EventListener) func() {
+	fn := js.FuncOf(func(_ js.Value, args []js.Value) interface{} {
 		listener.HandleEvent(Event(args[0]))
 		return nil
-	}))
+	})
+
+	win.Call("addEventListener", eventName, fn)
+
+	return func() {
+		defer fn.Release()
+		win.Call("removeEventListener", eventName, fn)
+	}
 }
 
-func (fn EventListenerFunc) HandleEvent(event Event) { fn(event) }
+func (el Element) AddEventListenerFunc(eventName string, listener EventListenerFunc) func() {
+	return el.AddEventListener(eventName, listener)
+}
 
-func (el Element) AddEventListenerFunc(eventName string, listener EventListenerFunc) {
-	el.AddEventListener(eventName, listener)
+func (el Element) AddEventListenerChannel(eventName string, c chan Event) func() {
+	return el.AddEventListenerFunc(eventName, func(event Event) {
+		c <- event
+	})
 }
 
 func (el Element) Tag() string {

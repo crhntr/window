@@ -26,6 +26,7 @@ func AddEventListener(eventName string, listener EventListener) func() {
 	win.Call("addEventListener", eventName, fn)
 
 	return func() {
+		defer fn.Release()
 		win.Call("removeEventListener", eventName, fn)
 	}
 }
