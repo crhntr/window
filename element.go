@@ -3,96 +3,11 @@
 package window
 
 import (
-	"bytes"
 	"fmt"
-	"html/template"
-	"strings"
 	"syscall/js"
 )
 
 type Element js.Value
-
-func (document document) NewElementFromTemplate(tmp *template.Template, name string, data interface{}) (Element, error) {
-	buf := bytes.NewBuffer(nil)
-	err := tmp.ExecuteTemplate(buf, name, data)
-	if err != nil {
-		return Element(js.Null()), err
-	}
-
-	div := document.Call("createElement", "div")
-	div.Set("innerHTML", strings.TrimSpace(buf.String()))
-
-	v := div.Get("firstChild")
-	if !v.Truthy() {
-		return Element(js.Null()), fmt.Errorf("could not get created element")
-	}
-
-	return Element(v), nil
-}
-
-// NewElement creates a new element from the format string and a call to fmt.Sprintf
-// callers should ensure the element was created successfully
-//
-//  el = Document.NewElement(`<div class=%[2]q>Hello, %[1]s!</div>`, "world", "greeting")
-//  if !el.Truthy() {
-//    // handle error
-//  }
-//
-func (document document) NewElement(format string, vs ...interface{}) Element {
-	tmp := document.Call("createElement", "div")
-	tmp.Set("innerHTML", strings.TrimSpace(fmt.Sprintf(format, vs...)))
-	return Element(tmp.Get("firstChild"))
-}
-
-func (document document) GetElementByID(id string) Element {
-	v := document.Call("getElementById", id)
-	if !v.Truthy() {
-		return Element(js.Null())
-	}
-	return Element(v)
-}
-
-func (document document) QuerySelector(query string, args ...interface{}) Element {
-	query = fmt.Sprintf(query, args...)
-
-	defer func() {
-		if r := recover(); r != nil {
-			if err, ok := r.(js.Error); ok {
-				panic(fmt.Errorf("query selector failed for %q: %w", query, err))
-			}
-		}
-	}()
-
-	return Element(document.Call("querySelector", query))
-}
-
-func (document document) QuerySelectorAll(query string, args ...interface{}) []Element {
-	query = fmt.Sprintf(query, args...)
-
-	defer func() {
-		if r := recover(); r != nil {
-			if err, ok := r.(js.Error); ok {
-				panic(fmt.Errorf("query selector failed for %q: %w", query, err))
-			}
-		}
-	}()
-
-	matches := document.Call("querySelectorAll", query)
-
-	if !matches.Truthy() {
-		return nil
-	}
-
-	length := matches.Length()
-
-	elements := make([]Element, length)
-
-	for index := 0; index < length; index++ {
-		elements[index] = Element(matches.Index(index))
-	}
-
-	return elements
-}
 
 func (el Element) Get(key string) js.Value                     { return js.Value(el).Get(key) }
 func (el Element) Set(key string, value interface{})           { js.Value(el).Set(key, value) }
