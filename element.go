@@ -270,3 +270,35 @@ func toInterfaceSlice(dst []interface{}, slice []Element) {
 		dst[i] = slice[i]
 	}
 }
+
+func (el Element) InsertHTMLBefore(format string, vs ...interface{}) {
+	el.Call("insertAdjacentHTML", "beforebegin", fmt.Sprintf(format, vs...))
+}
+
+func (el Element) PrependHTML(format string, vs ...interface{}) {
+	el.Call("insertAdjacentHTML", "afterbegin", fmt.Sprintf(format, vs...))
+}
+
+func (el Element) AppendHTML(format string, vs ...interface{}) {
+	el.Call("insertAdjacentHTML", "beforeend", fmt.Sprintf(format, vs...))
+}
+
+func (el Element) InsertHTMLAfter(format string, vs ...interface{}) {
+	el.Call("insertAdjacentHTML", "afterend", fmt.Sprintf(format, vs...))
+}
+
+func (el Element) InsertTextBefore(format string, vs ...interface{}) {
+	el.Call("insertAdjacentText", "beforebegin", fmt.Sprintf(format, vs...))
+}
+
+func (el Element) PrependText(format string, vs ...interface{}) {
+	el.Call("insertAdjacentText", "afterbegin", fmt.Sprintf(format, vs...))
+}
+
+func (el Element) AppendText(format string, vs ...interface{}) {
+	el.Call("insertAdjacentText", "beforeend", fmt.Sprintf(format, vs...))
+}
+
+func (el Element) InsertTextAfter(format string, vs ...interface{}) {
+	el.Call("insertAdjacentText", "afterend", fmt.Sprintf(format, vs...))
+}
