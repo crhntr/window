@@ -134,6 +134,10 @@ func (el Element) HasClass(class string) bool {
 	return el.Get("classList").Call("contains", class).Bool()
 }
 
+func (el Element) Clone() Element {
+	return Element(el.Call("cloneNode", true))
+}
+
 func (el Element) InnerHTML() string {
 	return el.Get("innerHTML").String()
 }
