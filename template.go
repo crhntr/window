@@ -12,7 +12,7 @@ func LoadTemplates(tmp *template.Template, selector string) (*template.Template,
 	}
 
 	if selector == "" {
-		selector = "script[type=text/go-template]"
+		selector = `script[type="text/go-template"]`
 	}
 
 	for _, el := range Document.QuerySelectorAll(selector) {
