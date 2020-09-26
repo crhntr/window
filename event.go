@@ -30,6 +30,8 @@ func (el Event) InstanceOf(t js.Value) bool { return js.Value(el).InstanceOf(t) 
 
 func (el Event) Target() js.Value { return el.Get("target") }
 
+func (el Event) TargetElement() Element { return Element(el.Target()) }
+
 func (el Event) PreventDefault() { el.Call("preventDefault") }
 
 func (el Event) Log() { js.Global().Get("console").Call("log", el) }
