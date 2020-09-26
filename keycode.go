@@ -3,11 +3,12 @@
 package window
 
 const (
-	KeyCodeClear     = 12
 	KeyCodeBackspace = 8
 	KeyCodeTab       = 9
-	KeyCodeShift     = 13
-	KeyCodeEnter     = 19
+	KeyCodeClear     = 12
+	KeyCodeShift     = 16
+	KeyCodeControl   = 17
+	KeyCodeEnter     = 13
 	KeyCodeEscape    = 27
 	KeyCodeSpace     = 32
 	KeyCodePageUp    = 33
