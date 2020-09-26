@@ -221,3 +221,8 @@ func (el Element) AppendText(format string, vs ...interface{}) {
 func (el Element) InsertTextAfter(format string, vs ...interface{}) {
 	el.Call("insertAdjacentText", "afterend", fmt.Sprintf(format, vs...))
 }
+
+// IndexOf returns the index at which a given element can be found in the array, or -1 if it is not present.
+func (el Element) IndexOf(child Element) int {
+	return js.Global().Get("Array").Get("prototype").Get("indexOf").Call("call", el.Get("children"), child).Int()
+}
