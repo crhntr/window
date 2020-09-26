@@ -190,6 +190,10 @@ func toInterfaceSlice(dst []interface{}, slice []Element) {
 	}
 }
 
+func (el Element) InsertBefore(element Element) {
+	el.Parent().Call("insertBefore", element, el)
+}
+
 func (el Element) InsertHTMLBefore(format string, vs ...interface{}) {
 	el.Call("insertAdjacentHTML", "beforebegin", fmt.Sprintf(format, vs...))
 }
@@ -200,6 +204,14 @@ func (el Element) PrependHTML(format string, vs ...interface{}) {
 
 func (el Element) AppendHTML(format string, vs ...interface{}) {
 	el.Call("insertAdjacentHTML", "beforeend", fmt.Sprintf(format, vs...))
+}
+
+func (el Element) InsertAfter(element Element) {
+	if next := el.NextSiblingElement(); next.Truthy() {
+		next.InsertBefore(element)
+		return
+	}
+	el.Parent().AppendChild(element)
 }
 
 func (el Element) InsertHTMLAfter(format string, vs ...interface{}) {
@@ -225,4 +237,9 @@ func (el Element) InsertTextAfter(format string, vs ...interface{}) {
 // IndexOf returns the index at which a given element can be found in the array, or -1 if it is not present.
 func (el Element) IndexOf(child Element) int {
 	return js.Global().Get("Array").Get("prototype").Get("indexOf").Call("call", el.Get("children"), child).Int()
+}
+
+// NextSiblingElement wraps nextElementSibling
+func (el Element) NextSiblingElement() Element {
+	return Element(el.Get("nextElementSibling"))
 }
