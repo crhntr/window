@@ -98,6 +98,10 @@ func (el Element) Closest(query string) Element {
 	return Element(el.Call("closest", query))
 }
 
+func (el Element) HasAncestor(query string) bool {
+	return el.Closest(query).Truthy()
+}
+
 func (el Element) QuerySelector(query string, args ...interface{}) Element {
 	query = fmt.Sprintf(query, args...)
 
