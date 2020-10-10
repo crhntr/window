@@ -69,13 +69,13 @@ func (el Element) ChildCount() int {
 	return el.Get("childElementCount").Int()
 }
 
-func (el Element) AppendChild(child Element) {
+func (el Element) AppendChild(child js.Wrapper) {
 	el.Call("appendChild", child)
 }
 
 // Prepend inserts elements before the first child of the Element
 // https://developer.mozilla.org/en-US/docs/Web/API/ParentNode/prepend
-func (el Element) Prepend(elements ...Element) {
+func (el Element) Prepend(elements ...js.Wrapper) {
 	if len(elements) == 0 {
 		return
 	}
@@ -86,7 +86,7 @@ func (el Element) Prepend(elements ...Element) {
 
 // ReplaceChild should only be called if the caller is sure
 // existingChild exists.
-func (el Element) ReplaceChild(newChild, existingChild Element) {
+func (el Element) ReplaceChild(newChild, existingChild js.Wrapper) {
 	el.Call("replaceChild", newChild, existingChild)
 }
 
@@ -184,13 +184,13 @@ func (el Element) Log() {
 	js.Global().Get("console").Call("log", el)
 }
 
-func toInterfaceSlice(dst []interface{}, slice []Element) {
+func toInterfaceSlice(dst []interface{}, slice []js.Wrapper) {
 	for i := range slice {
 		dst[i] = slice[i]
 	}
 }
 
-func (el Element) InsertBefore(element Element) {
+func (el Element) InsertBefore(element js.Wrapper) {
 	el.Parent().Call("insertBefore", element, el)
 }
 
@@ -206,7 +206,7 @@ func (el Element) AppendHTML(format string, vs ...interface{}) {
 	el.Call("insertAdjacentHTML", "beforeend", fmt.Sprintf(format, vs...))
 }
 
-func (el Element) InsertAfter(element Element) {
+func (el Element) InsertAfter(element js.Wrapper) {
 	if next := el.NextSiblingElement(); next.Truthy() {
 		next.InsertBefore(element)
 		return
@@ -235,7 +235,7 @@ func (el Element) InsertTextAfter(format string, vs ...interface{}) {
 }
 
 // IndexOf returns the index at which a given element can be found in the array, or -1 if it is not present.
-func (el Element) IndexOf(child Element) int {
+func (el Element) IndexOf(child js.Wrapper) int {
 	return js.Global().Get("Array").Get("prototype").Get("indexOf").Call("call", el.Get("children"), child).Int()
 }
 
