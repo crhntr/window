@@ -3,7 +3,6 @@
 package window
 
 import (
-	"errors"
 	"syscall/js"
 )
 
@@ -11,26 +10,19 @@ type ServerEventHandlerFunc = func(id, data string)
 
 type EventSource struct {
 	js.Value
-	Handlers map[string]ServerEventHandlerFunc
+	handlers map[string][]js.Func
 
 	LogEvents bool
 }
 
-func NewEventSource(srcURL string) (*EventSource, error) {
-	esv := js.Global().Get("EventSource").New(srcURL)
-
-	if !esv.Truthy() {
-		return nil, errors.New("created object is falsy")
+func NewEventSource(srcURL string) EventSource {
+	return EventSource{
+		Value:    js.Global().Get("EventSource").New(srcURL),
+		handlers: make(map[string][]js.Func),
 	}
-
-	return &EventSource{
-		LogEvents: true,
-		Value:     esv,
-		Handlers:  make(map[string]ServerEventHandlerFunc),
-	}, nil
 }
 
-func (es *EventSource) Handle(eventName string, handler ServerEventHandlerFunc) func() {
+func (es *EventSource) Handle(eventName string, handler ServerEventHandlerFunc) {
 	fn := js.FuncOf(func(_ js.Value, args []js.Value) interface{} {
 		msg := args[0]
 
@@ -46,11 +38,16 @@ func (es *EventSource) Handle(eventName string, handler ServerEventHandlerFunc) 
 		return nil
 	})
 
+	es.handlers[eventName] = append(es.handlers[eventName], fn)
+
 	es.Call("addEventListener", eventName, fn)
+}
 
-	return func() {
-		defer fn.Release()
-
-		es.Call("removeEventListener", eventName, fn)
+func (es *EventSource) Close() {
+	for eventName, fns := range es.handlers {
+		for _, fn := range fns {
+			es.Call("removeEventListener", eventName, fn)
+			fn.Release()
+		}
 	}
 }
