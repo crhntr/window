@@ -15,8 +15,8 @@ type EventSource struct {
 	LogEvents bool
 }
 
-func NewEventSource(srcURL string) EventSource {
-	return EventSource{
+func NewEventSource(srcURL string) *EventSource {
+	return &EventSource{
 		Value:    js.Global().Get("EventSource").New(srcURL),
 		handlers: make(map[string][]js.Func),
 	}
