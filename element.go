@@ -20,7 +20,11 @@ func (el Element) IsUndefined() bool                           { return js.Value
 func (el Element) InstanceOf(t js.Value) bool                  { return js.Value(el).InstanceOf(t) }
 
 func (el Element) Attribute(key string) string {
-	return el.Call("getAttribute", key).String()
+	attrVal := el.Call("getAttribute", key)
+	if attrVal.IsNull() {
+		return ""
+	}
+	return attrVal.String()
 }
 
 func (el Element) SetAttribute(key, val string, args ...interface{}) {
