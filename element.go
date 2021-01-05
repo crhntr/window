@@ -31,6 +31,13 @@ func (el Element) SetAttribute(key, val string, args ...interface{}) {
 	el.Call("setAttribute", key, fmt.Sprintf(val, args...))
 }
 
+func (el Element) RemoveAttribute(key string) {
+	if el.IsNull() {
+		return
+	}
+	el.Call("removeAttribute", key)
+}
+
 func (el Element) AddClass(class string) {
 	if list := js.Value(el).Get("classList"); list.Truthy() {
 		list.Call("add", class)
