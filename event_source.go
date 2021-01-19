@@ -44,10 +44,18 @@ func (es *EventSource) Handle(eventName string, handler ServerEventHandlerFunc) 
 }
 
 func (es *EventSource) Close() {
+	if es == nil {
+		return
+	}
+
 	for eventName, fns := range es.handlers {
 		for _, fn := range fns {
 			es.Call("removeEventListener", eventName, fn)
 			fn.Release()
 		}
+	}
+
+	if es.Truthy() {
+		es.Value.Call("close")
 	}
 }
