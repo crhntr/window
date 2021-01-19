@@ -76,6 +76,18 @@ func (el Element) SetInnerHTMLf(format string, vs ...interface{}) {
 	el.Set("innerHTML", fmt.Sprintf(format, vs...))
 }
 
+func (el Element) OuterHTML() string {
+	return el.Get("outerHTML").String()
+}
+
+func (el Element) SetOuterHTML(str string) {
+	el.Set("outerHTML", str)
+}
+
+func (el Element) SetOuterHTMLf(format string, vs ...interface{}) {
+	el.Set("outerHTML", fmt.Sprintf(format, vs...))
+}
+
 func (el Element) ChildCount() int {
 	return el.Get("childElementCount").Int()
 }
