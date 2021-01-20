@@ -84,6 +84,10 @@ func (el Element) SetOuterHTML(str string) {
 	el.Set("outerHTML", str)
 }
 
+func (el Element) ReplaceElement(newEl Element) {
+	el.Parent().ReplaceChild(newEl, el)
+}
+
 func (el Element) SetOuterHTMLf(format string, vs ...interface{}) {
 	el.Set("outerHTML", fmt.Sprintf(format, vs...))
 }
