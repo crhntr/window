@@ -79,19 +79,14 @@ func (document document) NewElementFromTemplate(name string, data interface{}) (
 //  }
 //
 func (document document) NewElement(templateHTML string, data interface{}) Element {
-	tmp, err := templates.Clone()
-	if err != nil {
-		panic(err)
-	}
-
-	tmp, err = tmp.Parse(templateHTML)
+	_, err := templates.Parse(templateHTML)
 	if err != nil {
 		panic(err)
 	}
 
 	var buf bytes.Buffer
 
-	err = tmp.Execute(&buf, data)
+	err = templates.Execute(&buf, data)
 	if err != nil {
 		panic(err)
 	}
