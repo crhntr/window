@@ -68,7 +68,12 @@ func (document document) NewElementFromTemplate(name string, data interface{}) (
 // NewElement creates a new element from the format string and a call to fmt.Sprintf
 // callers should ensure the element was created successfully
 //
-//  el = Document.NewElement(`<div class=%[2]q>Hello, %[1]s!</div>`, "world", "greeting")
+//  el = Document.NewElement(`<div class=%[2]q>Hello, %[1]s!</div>`, struct{
+//  	Class, Name string
+//  }{
+// 		Class: "greeting",
+//		Name: "world",
+//  })
 //  if !el.Truthy() {
 //    // handle error
 //  }
@@ -94,6 +99,10 @@ func (document document) NewElement(templateHTML string, data interface{}) Eleme
 	tmpDiv := document.Call("createElement", "div")
 	tmpDiv.Set("innerHTML", buf.String())
 	return Element(tmpDiv.Get("firstChild"))
+}
+
+func (document document) CreateElement(tagName string) Element {
+	return Element(document.Call("createElement", tagName))
 }
 
 func (document document) GetElementByID(id string) Element {
