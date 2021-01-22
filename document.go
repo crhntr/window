@@ -5,6 +5,7 @@ package window
 import (
 	"bytes"
 	"fmt"
+	"html/template"
 	"strings"
 	"syscall/js"
 )
@@ -79,7 +80,7 @@ func (document document) NewElementFromTemplate(name string, data interface{}) (
 //  }
 //
 func (document document) NewElement(templateHTML string, data interface{}) Element {
-	_, err := templates.Parse(templateHTML)
+	_, err := template.New("").Parse(templateHTML)
 	if err != nil {
 		panic(err)
 	}
