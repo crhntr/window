@@ -80,14 +80,14 @@ func (document document) NewElementFromTemplate(name string, data interface{}) (
 //  }
 //
 func (document document) NewElement(templateHTML string, data interface{}) Element {
-	_, err := template.New("").Parse(templateHTML)
+	t, err := template.New("").Parse(templateHTML)
 	if err != nil {
 		panic(err)
 	}
 
 	var buf bytes.Buffer
 
-	err = templates.Execute(&buf, data)
+	err = t.Execute(&buf, data)
 	if err != nil {
 		panic(err)
 	}
