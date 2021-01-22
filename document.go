@@ -5,7 +5,6 @@ package window
 import (
 	"bytes"
 	"fmt"
-	"html/template"
 	"strings"
 	"syscall/js"
 )
@@ -48,9 +47,9 @@ func (document document) AddEventListenerChannel(eventName string, c chan Event)
 	})
 }
 
-func (document document) NewElementFromTemplate(tmp *template.Template, name string, data interface{}) (Element, error) {
+func (document document) NewElementFromTemplate(name string, data interface{}) (Element, error) {
 	buf := bytes.NewBuffer(nil)
-	err := tmp.ExecuteTemplate(buf, name, data)
+	err := templates.ExecuteTemplate(buf, name, data)
 	if err != nil {
 		return Element(js.Null()), err
 	}
@@ -74,10 +73,27 @@ func (document document) NewElementFromTemplate(tmp *template.Template, name str
 //    // handle error
 //  }
 //
-func (document document) NewElement(format string, vs ...interface{}) Element {
-	tmp := document.Call("createElement", "div")
-	tmp.Set("innerHTML", strings.TrimSpace(fmt.Sprintf(format, vs...)))
-	return Element(tmp.Get("firstChild"))
+func (document document) NewElement(templateHTML string, data interface{}) Element {
+	tmp, err := templates.Clone()
+	if err != nil {
+		panic(err)
+	}
+
+	tmp, err = tmp.Parse(templateHTML)
+	if err != nil {
+		panic(err)
+	}
+
+	var buf bytes.Buffer
+
+	err = tmp.Execute(&buf, data)
+	if err != nil {
+		panic(err)
+	}
+
+	tmpDiv := document.Call("createElement", "div")
+	tmpDiv.Set("innerHTML", buf.String())
+	return Element(tmpDiv.Get("firstChild"))
 }
 
 func (document document) GetElementByID(id string) Element {

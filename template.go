@@ -4,24 +4,34 @@ package window
 
 import (
 	"html/template"
+	"sync"
 )
 
-func LoadTemplates(tmp *template.Template, selector string) (*template.Template, error) {
-	if tmp == nil {
-		tmp = template.New("")
-	}
+var (
+	once sync.Once
+	templates *template.Template
+)
 
-	if selector == "" {
-		selector = `script[type="text/go-template"]`
-	}
+func LoadTemplates(tmp *template.Template, selector string) error {
+	var err error
 
-	for _, el := range Document.QuerySelectorAll(selector) {
-		var err error
-		tmp, err = tmp.New(el.Attribute("id")).Parse(el.InnerHTML())
-		if err != nil {
-			return tmp, err
+	once.Do(func() {
+		if tmp == nil {
+			tmp = template.New("")
 		}
-	}
 
-	return tmp, nil
+		if selector == "" {
+			selector = `script[type="text/go-template"]`
+		}
+
+		for _, el := range Document.QuerySelectorAll(selector) {
+			templates, err = tmp.New(el.Attribute("id")).Parse(el.InnerHTML())
+			if err != nil {
+				break
+			}
+		}
+	})
+
+
+	return err
 }

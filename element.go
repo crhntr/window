@@ -84,12 +84,12 @@ func (el Element) SetOuterHTML(str string) {
 	el.Set("outerHTML", str)
 }
 
-func (el Element) ReplaceElement(newEl Element) {
-	el.Parent().ReplaceChild(newEl, el)
-}
-
 func (el Element) SetOuterHTMLf(format string, vs ...interface{}) {
 	el.Set("outerHTML", fmt.Sprintf(format, vs...))
+}
+
+func (el Element) ReplaceElement(newEl Element) {
+	el.Parent().ReplaceChild(newEl, el)
 }
 
 func (el Element) ChildCount() int {
@@ -225,18 +225,6 @@ func (el Element) InsertBefore(element js.Wrapper) {
 	el.Parent().Call("insertBefore", element, el)
 }
 
-func (el Element) InsertHTMLBefore(format string, vs ...interface{}) {
-	el.Call("insertAdjacentHTML", "beforebegin", fmt.Sprintf(format, vs...))
-}
-
-func (el Element) PrependHTML(format string, vs ...interface{}) {
-	el.Call("insertAdjacentHTML", "afterbegin", fmt.Sprintf(format, vs...))
-}
-
-func (el Element) AppendHTML(format string, vs ...interface{}) {
-	el.Call("insertAdjacentHTML", "beforeend", fmt.Sprintf(format, vs...))
-}
-
 func (el Element) InsertAfter(element js.Wrapper) {
 	if next := el.NextSiblingElement(); next.Truthy() {
 		next.InsertBefore(element)
@@ -245,22 +233,50 @@ func (el Element) InsertAfter(element js.Wrapper) {
 	el.Parent().AppendChild(element)
 }
 
+// InsertHTMLBefore calls insertAdjacentHTML with beforebegin
+// it is not safe to use with user input as it calls fmt.Sprintf
+func (el Element) InsertHTMLBefore(format string, vs ...interface{}) {
+	el.Call("insertAdjacentHTML", "beforebegin", fmt.Sprintf(format, vs...))
+}
+
+// PrependHTML calls insertAdjacentHTML with afterbegin
+// it is not safe to use with user input as it calls fmt.Sprintf
+func (el Element) PrependHTML(format string, vs ...interface{}) {
+	el.Call("insertAdjacentHTML", "afterbegin", fmt.Sprintf(format, vs...))
+}
+
+// AppendHTML calls insertAdjacentHTML with beforeend
+// it is not safe to use with user input as it calls fmt.Sprintf
+func (el Element) AppendHTML(format string, vs ...interface{}) {
+	el.Call("insertAdjacentHTML", "beforeend", fmt.Sprintf(format, vs...))
+}
+
+// InsertHTMLAfter calls insertAdjacentHTML with afterend
+// it is not safe to use with user input as it calls fmt.Sprintf
 func (el Element) InsertHTMLAfter(format string, vs ...interface{}) {
 	el.Call("insertAdjacentHTML", "afterend", fmt.Sprintf(format, vs...))
 }
 
+// InsertTextBefore calls insertAdjacentText with beforebegin
+// it is not safe to use with user input as it calls fmt.Sprintf
 func (el Element) InsertTextBefore(format string, vs ...interface{}) {
 	el.Call("insertAdjacentText", "beforebegin", fmt.Sprintf(format, vs...))
 }
 
+// PrependText calls insertAdjacentText with afterbegin
+// it is not safe to use with user input as it calls fmt.Sprintf
 func (el Element) PrependText(format string, vs ...interface{}) {
 	el.Call("insertAdjacentText", "afterbegin", fmt.Sprintf(format, vs...))
 }
 
+// AppendText calls insertAdjacentText with beforeend
+// it is not safe to use with user input as it calls fmt.Sprintf
 func (el Element) AppendText(format string, vs ...interface{}) {
 	el.Call("insertAdjacentText", "beforeend", fmt.Sprintf(format, vs...))
 }
 
+// InsertTextAfter calls insertAdjacentText with afterend
+// it is not safe to use with user input as it calls fmt.Sprintf
 func (el Element) InsertTextAfter(format string, vs ...interface{}) {
 	el.Call("insertAdjacentText", "afterend", fmt.Sprintf(format, vs...))
 }
