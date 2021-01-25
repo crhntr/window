@@ -175,11 +175,16 @@ func (el Element) AddEventListener(eventName string, listener EventListener) fun
 		return nil
 	})
 
-	win.Call("addEventListener", eventName, fn)
+	el.Call("addEventListener", eventName, fn)
 
 	return func() {
 		defer fn.Release()
-		win.Call("removeEventListener", eventName, fn)
+
+		if !el.Truthy() {
+			return
+		}
+
+		el.Call("removeEventListener", eventName, fn)
 	}
 }
 
