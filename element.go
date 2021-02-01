@@ -9,6 +9,10 @@ import (
 
 type Element js.Value
 
+func IsElementWithTag(node js.Value, tag string) bool {
+	return !node.IsNull() && node.Get("nodeType").Int() == 1 && node.Get("tag").String() == tag
+}
+
 func (el Element) Get(key string) js.Value                     { return js.Value(el).Get(key) }
 func (el Element) Set(key string, value interface{})           { js.Value(el).Set(key, value) }
 func (el Element) Call(m string, args ...interface{}) js.Value { return js.Value(el).Call(m, args...) }
