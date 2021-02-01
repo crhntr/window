@@ -16,7 +16,7 @@ const (
 	Document document = 0
 )
 
-var doc = js.Global().Get("document")
+var doc = win.Get("document")
 
 func (document document) JSValue() js.Value                           { return doc }
 func (document document) Get(key string) js.Value                     { return doc.Get(key) }

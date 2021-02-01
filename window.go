@@ -48,3 +48,5 @@ func URL() (*url.URL, error) {
 func Body() Element {
 	return Element(Document.Call("getElementsByTagName", "body").Index(0))
 }
+
+
