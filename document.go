@@ -97,6 +97,10 @@ func (document document) NewElement(templateHTML string, data interface{}) Eleme
 	return Element(tmpDiv.Get("firstChild"))
 }
 
+func (document document) CreateTextNode(text string) js.Value {
+	return document.Call("createTextNode", text)
+}
+
 func (document document) CreateElement(tagName string) Element {
 	return Element(document.Call("createElement", tagName))
 }
