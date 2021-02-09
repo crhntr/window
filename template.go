@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	once sync.Once
+	once      sync.Once
 	templates *template.Template
 )
 
@@ -25,13 +25,21 @@ func LoadTemplates(tmp *template.Template, selector string) error {
 		}
 
 		for _, el := range Document.QuerySelectorAll(selector) {
-			templates, err = tmp.New(el.Attribute("id")).Parse(el.InnerHTML())
+			templateBody := el.InnerHTML()
+			templates, err = tmp.New(el.Attribute("id")).Parse(templateBody)
 			if err != nil {
+				Console.Log("failed parsing template", err.Error(), templateBody)
 				break
 			}
 		}
 	})
 
-
 	return err
+}
+
+func Templates() []*template.Template {
+	if templates == nil {
+		return nil
+	}
+	return templates.Templates()
 }
