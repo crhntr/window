@@ -24,6 +24,10 @@ func (el Element) IsNull() bool                                { return js.Value
 func (el Element) IsUndefined() bool                           { return js.Value(el).IsUndefined() }
 func (el Element) InstanceOf(t js.Value) bool                  { return js.Value(el).InstanceOf(t) }
 
+func (el Element) IsEqualNode(w js.Wrapper) bool {
+	return el.Call("isEqualNode", w.JSValue()).Bool()
+}
+
 func (el Element) Attribute(key string) string {
 	attrVal := el.Call("getAttribute", key)
 	if attrVal.IsNull() {
