@@ -58,14 +58,12 @@ func (document document) NewElementFromTemplate(name string, data interface{}) (
 	div := document.Call("createElement", "div")
 	div.Set("innerHTML", strings.TrimSpace(buf.String()))
 
-	el := Element(div.Get("firstChild"))
-	if !el.Truthy() {
-		return el, fmt.Errorf("could not get created element")
+	v := div.Get("firstChild")
+	if !v.Truthy() {
+		return Element(js.Null()), fmt.Errorf("could not get created element")
 	}
 
-	el.SetAttribute("data-go-template", name)
-
-	return el, nil
+	return Element(v), nil
 }
 
 // NewElement creates a new element from the format string and a call to fmt.Sprintf
