@@ -8,36 +8,38 @@ import (
 
 type Event js.Value
 
-func (el Event) Get(key string) js.Value { return js.Value(el).Get(key) }
+func (ev Event) Get(key string) js.Value { return js.Value(ev).Get(key) }
 
-func (el Event) Set(key string, value interface{}) { js.Value(el).Set(key, value) }
+func (ev Event) Set(key string, value interface{}) { js.Value(ev).Set(key, value) }
 
-func (el Event) Call(m string, args ...interface{}) js.Value { return js.Value(el).Call(m, args...) }
+func (ev Event) Call(m string, args ...interface{}) js.Value { return js.Value(ev).Call(m, args...) }
 
-func (el Event) JSValue() js.Value { return js.Value(el) }
+func (ev Event) JSValue() js.Value { return js.Value(ev) }
 
-func (el Event) Type() js.Type { return js.Value(el).Type() }
+func (ev Event) Type() js.Type { return js.Value(ev).Type() }
 
-func (el Event) EventType() string { return js.Value(el).Get("type").String() }
+func (ev Event) EventType() string { return js.Value(ev).Get("type").String() }
 
-func (el Event) Truthy() bool { return js.Value(el).Truthy() }
+func (ev Event) Truthy() bool { return js.Value(ev).Truthy() }
 
-func (el Event) IsNull() bool { return js.Value(el).IsNull() }
+func (ev Event) IsNull() bool { return js.Value(ev).IsNull() }
 
-func (el Event) IsUndefined() bool { return js.Value(el).IsUndefined() }
+func (ev Event) IsUndefined() bool { return js.Value(ev).IsUndefined() }
 
-func (el Event) InstanceOf(t js.Value) bool { return js.Value(el).InstanceOf(t) }
+func (ev Event) InstanceOf(t js.Value) bool { return js.Value(ev).InstanceOf(t) }
 
-func (el Event) Target() js.Value { return el.Get("target") }
+func (ev Event) Target() js.Value { return ev.Get("target") }
 
-func (el Event) TargetElement() Element { return Element(el.Target()) }
+func (ev Event) Equal(w js.Value) bool { return js.Value(ev).Equal(w) }
 
-func (el Event) PreventDefault() { el.Call("preventDefault") }
+func (ev Event) TargetElement() Element { return Element(ev.Target()) }
 
-func (el Event) Log() { js.Global().Get("console").Call("log", el) }
+func (ev Event) PreventDefault() { ev.Call("preventDefault") }
+
+func (ev Event) Log() { js.Global().Get("console").Call("log", ev) }
 
 // KeyCode can be used on keyup and keydown events
-func (el Event) KeyCode() int { return el.Get("keyCode").Int() }
+func (ev Event) KeyCode() int { return ev.Get("keyCode").Int() }
 
 type EventListener interface {
 	HandleEvent(event Event)

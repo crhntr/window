@@ -14,6 +14,7 @@ func IsElementWithTag(node js.Value, tag string) bool {
 }
 
 func (el Element) Get(key string) js.Value                     { return js.Value(el).Get(key) }
+func (el Element) Equal(w js.Value) bool                       { return js.Value(el).Equal(w) }
 func (el Element) Set(key string, value interface{})           { js.Value(el).Set(key, value) }
 func (el Element) Call(m string, args ...interface{}) js.Value { return js.Value(el).Call(m, args...) }
 func (el Element) JSValue() js.Value                           { return js.Value(el) }
