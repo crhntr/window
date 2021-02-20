@@ -82,7 +82,7 @@ func (el Element) SetInnerHTML(str string) {
 }
 
 func (el Element) SetInnerHTMLf(format string, vs ...interface{}) {
-	el.Set("innerHTML", fmt.Sprintf(format, vs...))
+	el.Set("innerHTML", Sprintf(format, vs...))
 }
 
 func (el Element) OuterHTML() string {
@@ -94,7 +94,7 @@ func (el Element) SetOuterHTML(str string) {
 }
 
 func (el Element) SetOuterHTMLf(format string, vs ...interface{}) {
-	el.Set("outerHTML", fmt.Sprintf(format, vs...))
+	el.Set("outerHTML", Sprintf(format, vs...))
 }
 
 func (el Element) ReplaceElement(newEl Element) {
@@ -178,6 +178,28 @@ func (el Element) QuerySelectorAll(query string, args ...interface{}) []Element 
 	return elements
 }
 
+
+// QuerySelectorAllCount returns the number of results from the query.
+func (el Element) QuerySelectorAllCount(query string, args ...interface{}) int {
+	query = fmt.Sprintf(query, args...)
+
+	defer func() {
+		if r := recover(); r != nil {
+			if err, ok := r.(js.Error); ok {
+				panic(fmt.Errorf("query selector failed for %q: %w", query, err))
+			}
+		}
+	}()
+
+	matches := el.Call("querySelectorAll", query)
+
+	if !matches.Truthy() {
+		return 0
+	}
+
+	return matches.Length()
+}
+
 func (el Element) AddEventListener(eventName string, listener EventListener) func() {
 	fn := js.FuncOf(func(_ js.Value, args []js.Value) interface{} {
 		listener.HandleEvent(Event(args[0]))
@@ -250,49 +272,49 @@ func (el Element) InsertAfter(element js.Wrapper) {
 // InsertHTMLBefore calls insertAdjacentHTML with beforebegin
 // it is not safe to use with user input as it calls fmt.Sprintf
 func (el Element) InsertHTMLBefore(format string, vs ...interface{}) {
-	el.Call("insertAdjacentHTML", "beforebegin", fmt.Sprintf(format, vs...))
+	el.Call("insertAdjacentHTML", "beforebegin", Sprintf(format, vs...))
 }
 
 // PrependHTML calls insertAdjacentHTML with afterbegin
 // it is not safe to use with user input as it calls fmt.Sprintf
 func (el Element) PrependHTML(format string, vs ...interface{}) {
-	el.Call("insertAdjacentHTML", "afterbegin", fmt.Sprintf(format, vs...))
+	el.Call("insertAdjacentHTML", "afterbegin", Sprintf(format, vs...))
 }
 
 // AppendHTML calls insertAdjacentHTML with beforeend
 // it is not safe to use with user input as it calls fmt.Sprintf
 func (el Element) AppendHTML(format string, vs ...interface{}) {
-	el.Call("insertAdjacentHTML", "beforeend", fmt.Sprintf(format, vs...))
+	el.Call("insertAdjacentHTML", "beforeend", Sprintf(format, vs...))
 }
 
 // InsertHTMLAfter calls insertAdjacentHTML with afterend
 // it is not safe to use with user input as it calls fmt.Sprintf
 func (el Element) InsertHTMLAfter(format string, vs ...interface{}) {
-	el.Call("insertAdjacentHTML", "afterend", fmt.Sprintf(format, vs...))
+	el.Call("insertAdjacentHTML", "afterend", Sprintf(format, vs...))
 }
 
 // InsertTextBefore calls insertAdjacentText with beforebegin
 // it is not safe to use with user input as it calls fmt.Sprintf
 func (el Element) InsertTextBefore(format string, vs ...interface{}) {
-	el.Call("insertAdjacentText", "beforebegin", fmt.Sprintf(format, vs...))
+	el.Call("insertAdjacentText", "beforebegin", Sprintf(format, vs...))
 }
 
 // PrependText calls insertAdjacentText with afterbegin
 // it is not safe to use with user input as it calls fmt.Sprintf
 func (el Element) PrependText(format string, vs ...interface{}) {
-	el.Call("insertAdjacentText", "afterbegin", fmt.Sprintf(format, vs...))
+	el.Call("insertAdjacentText", "afterbegin", Sprintf(format, vs...))
 }
 
 // AppendText calls insertAdjacentText with beforeend
 // it is not safe to use with user input as it calls fmt.Sprintf
 func (el Element) AppendText(format string, vs ...interface{}) {
-	el.Call("insertAdjacentText", "beforeend", fmt.Sprintf(format, vs...))
+	el.Call("insertAdjacentText", "beforeend", Sprintf(format, vs...))
 }
 
 // InsertTextAfter calls insertAdjacentText with afterend
 // it is not safe to use with user input as it calls fmt.Sprintf
 func (el Element) InsertTextAfter(format string, vs ...interface{}) {
-	el.Call("insertAdjacentText", "afterend", fmt.Sprintf(format, vs...))
+	el.Call("insertAdjacentText", "afterend", Sprintf(format, vs...))
 }
 
 // IndexOf returns the index at which a given element can be found in the array, or -1 if it is not present.

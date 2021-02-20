@@ -5,7 +5,6 @@ package window
 import (
 	"bytes"
 	"fmt"
-	"html/template"
 	"strings"
 	"syscall/js"
 )
@@ -66,34 +65,18 @@ func (document document) NewElementFromTemplate(name string, data interface{}) (
 	return Element(v), nil
 }
 
-// NewElement creates a new element from the format string and a call to fmt.Sprintf
-// callers should ensure the element was created successfully
+// NewElement creates a new element from the format string and a call to Sprintf
+// callers should ensure the element was created successfully. Sprintf sanitizes all parameters
+// but assumes the format string is safe html.
 //
-//  el = Document.NewElement(`<div class=%[2]q>Hello, %[1]s!</div>`, struct{
-//  	Class, Name string
-//  }{
-// 		Class: "greeting",
-//		Name: "world",
-//  })
+//  el = Document.NewElement(`<div class=%[2]q>Hello, %[1]s!</div>`, "world", "greeting")
 //  if !el.Truthy() {
 //    // handle error
 //  }
 //
-func (document document) NewElement(templateHTML string, data interface{}) Element {
-	t, err := template.New("").Parse(templateHTML)
-	if err != nil {
-		panic(err)
-	}
-
-	var buf bytes.Buffer
-
-	err = t.Execute(&buf, data)
-	if err != nil {
-		panic(err)
-	}
-
+func (document document) NewElement(format string, a ...interface{}) Element {
 	tmpDiv := document.Call("createElement", "div")
-	tmpDiv.Set("innerHTML", buf.String())
+	tmpDiv.Set("innerHTML", Sprintf(format, a...))
 	return Element(tmpDiv.Get("firstChild"))
 }
 
@@ -113,6 +96,8 @@ func (document document) GetElementByID(id string) Element {
 	return Element(v)
 }
 
+// QuerySelector wraps query selector. It catches errors thrown for invalid queries
+// and logs the output to the console.
 func (document document) QuerySelector(query string, args ...interface{}) Element {
 	query = fmt.Sprintf(query, args...)
 
@@ -127,6 +112,8 @@ func (document document) QuerySelector(query string, args ...interface{}) Elemen
 	return Element(document.Call("querySelector", query))
 }
 
+// QuerySelectorAll wraps query selector. It catches errors thrown for invalid queries
+// and logs the output to the console.
 func (document document) QuerySelectorAll(query string, args ...interface{}) []Element {
 	query = fmt.Sprintf(query, args...)
 
@@ -153,4 +140,25 @@ func (document document) QuerySelectorAll(query string, args ...interface{}) []E
 	}
 
 	return elements
+}
+
+// QuerySelectorAllCount returns the number of results from the query.
+func (document document) QuerySelectorAllCount(query string, args ...interface{}) int {
+	query = fmt.Sprintf(query, args...)
+
+	defer func() {
+		if r := recover(); r != nil {
+			if err, ok := r.(js.Error); ok {
+				panic(fmt.Errorf("query selector failed for %q: %w", query, err))
+			}
+		}
+	}()
+
+	matches := document.Call("querySelectorAll", query)
+
+	if !matches.Truthy() {
+		return 0
+	}
+
+	return matches.Length()
 }
