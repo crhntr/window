@@ -18,6 +18,6 @@ func (console console) Set(key string, value interface{})           { con.Set(ke
 func (console console) Call(m string, args ...interface{}) js.Value { return con.Call(m, args...) }
 func (console console) Type() js.Type                               { return con.Type() }
 
-func (console console) Log(objects...interface{}) {
+func (console console) Log(objects ...interface{}) {
 	con.Call("log", objects...)
 }

@@ -7,7 +7,9 @@ import (
 func TestSprintf(t *testing.T) {
 	match := func(t *testing.T, got, exp string) {
 		t.Helper()
-		if got != exp { t.Errorf("expected %q but got %q", exp, got) }
+		if got != exp {
+			t.Errorf("expected %q but got %q", exp, got)
+		}
 	}
 
 	match(t,
@@ -27,4 +29,3 @@ func TestSprintf(t *testing.T) {
 		`<div style="width: 20px;">&lt;br/&gt;</div>`,
 	)
 }
-

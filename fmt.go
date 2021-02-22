@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func Sprintf(format string, a...interface{}) string {
+func Sprintf(format string, a ...interface{}) string {
 	safeArgs := make([]interface{}, len(a))
 	for i, arg := range a {
 		safeArgs[i] = safe{arg}
@@ -14,7 +14,7 @@ func Sprintf(format string, a...interface{}) string {
 	return fmt.Sprintf(format, safeArgs...)
 }
 
-type safe struct{
+type safe struct {
 	wrapped interface{}
 }
 
@@ -43,4 +43,3 @@ func recreateFormatVerb(f fmt.State, verb rune) string {
 
 	return string(verbWithFlags)
 }
-

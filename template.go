@@ -24,7 +24,7 @@ func LoadTemplates(tmp *template.Template, selector string) error {
 			selector = `script[type="text/go-template"]`
 		}
 
-		for _, el := range Document.QuerySelectorAll(selector) {
+		for _, el := range Document.QuerySelectorAll(selector).ElementSlice() {
 			templateBody := el.InnerHTML()
 			templates, err = tmp.New(el.Attribute("id")).Parse(templateBody)
 			if err != nil {
