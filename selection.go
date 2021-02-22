@@ -17,8 +17,8 @@ func (selection Selection) Range(index int) Range {
 	return Range(js.Value(selection).Call("getRangeAt", index))
 }
 
-func (selection Selection) Count() int {
-	return js.Value(selection).Call("rangeCount").Int()
+func (selection Selection) RangeCount() int {
+	return js.Value(selection).Get("rangeCount").Int()
 }
 
 func (selection Selection) AddRange(ran Range) {
@@ -31,17 +31,17 @@ func (selection Selection) RemoveAllRanges() {
 
 func (selection Selection) JSValue() js.Value { return js.Value(selection) }
 
-func (selection Selection) Get(key string) js.Value           { return selection.Get(key) }
-func (selection Selection) Equal(w js.Value) bool             { return selection.Equal(w) }
-func (selection Selection) Set(key string, value interface{}) { selection.Set(key, value) }
+func (selection Selection) Get(key string) js.Value           { return selection.JSValue().Get(key) }
+func (selection Selection) Equal(w js.Value) bool             { return selection.JSValue().Equal(w) }
+func (selection Selection) Set(key string, value interface{}) { selection.JSValue().Set(key, value) }
 func (selection Selection) Call(m string, args ...interface{}) js.Value {
-	return selection.Call(m, args...)
+	return selection.JSValue().Call(m, args...)
 }
-func (selection Selection) Type() js.Type              { return selection.Type() }
-func (selection Selection) Truthy() bool               { return selection.Truthy() }
-func (selection Selection) IsNull() bool               { return selection.IsNull() }
-func (selection Selection) IsUndefined() bool          { return selection.IsUndefined() }
-func (selection Selection) InstanceOf(t js.Value) bool { return selection.InstanceOf(t) }
+func (selection Selection) Type() js.Type              { return selection.JSValue().Type() }
+func (selection Selection) Truthy() bool               { return selection.JSValue().Truthy() }
+func (selection Selection) IsNull() bool               { return selection.JSValue().IsNull() }
+func (selection Selection) IsUndefined() bool          { return selection.JSValue().IsUndefined() }
+func (selection Selection) InstanceOf(t js.Value) bool { return selection.JSValue().InstanceOf(t) }
 
 func (document document) NewRange() Range {
 	return Range(win.New("Range"))
