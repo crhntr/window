@@ -41,6 +41,10 @@ func nodeFactory(value js.Wrapper) Node {
 		return wrapper.Node()
 	}
 
+	if v := value.JSValue(); v.IsNull() {
+		return Element(v)
+	}
+
 	switch nodeType(value) {
 	case NodeTypeElement:
 		return Element(value.JSValue())
