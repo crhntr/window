@@ -42,9 +42,10 @@ func (selection Selection) Truthy() bool               { return selection.JSValu
 func (selection Selection) IsNull() bool               { return selection.JSValue().IsNull() }
 func (selection Selection) IsUndefined() bool          { return selection.JSValue().IsUndefined() }
 func (selection Selection) InstanceOf(t js.Value) bool { return selection.JSValue().InstanceOf(t) }
+func (selection Selection) String() string { return selection.JSValue().Call("toString").String() }
 
 func (document document) NewRange() Range {
-	return Range(win.New("Range"))
+	return Range(win.Get("Range").New())
 }
 
 func (ran Range) CommonAncestor(node js.Value) Node {
@@ -68,11 +69,11 @@ func (ran Range) EndOffset() int {
 }
 
 func (ran Range) SetStart(node Node, offset int) {
-	ran.JSValue().Call("setEnd", node, offset)
+	ran.JSValue().Call("setStart", node.JSValue(), offset)
 }
 
 func (ran Range) SetEnd(node Node, offset int) {
-	ran.JSValue().Call("setEnd", node, offset)
+	ran.JSValue().Call("setEnd", node.JSValue(), offset)
 }
 
 func (ran Range) SetStartBefore(node js.Value) {
