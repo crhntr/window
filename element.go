@@ -9,8 +9,6 @@ import (
 
 type Element js.Value
 
-var _ ChildNode = Element(js.Null())
-
 func (el Element) JSValue() js.Value { return js.Value(el) }
 
 func (el Element) Get(key string) js.Value                     { return js.Value(el).Get(key) }
@@ -264,3 +262,6 @@ func (el Element) Remove()                  { childNodeRemove(el) }
 func (el Element) Before(node ...Node)      { childNodeBefore(el, node) }
 func (el Element) After(node ...Node)       { childNodeAfter(el, node) }
 func (el Element) ReplaceWith(node ...Node) { childNodeReplaceWith(el, node) }
+
+func (el Element) AsElement() Element { return nodeAsElement(el) }
+func (el Element) AsText() Text       { return nodeAsText(el) }

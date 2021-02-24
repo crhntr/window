@@ -37,3 +37,10 @@ func (t Text) Remove()                  { childNodeRemove(t) }
 func (t Text) Before(node ...Node)      { childNodeBefore(t, node) }
 func (t Text) After(node ...Node)       { childNodeAfter(t, node) }
 func (t Text) ReplaceWith(node ...Node) { childNodeReplaceWith(t, node) }
+
+func (t Text) WholeText() string { return js.Value(t).Call("wholeTExt").String() }
+
+func (t Text) Length() int { return js.Value(t).Length() }
+
+func (t Text) AsElement() Element { return nodeAsElement(t) }
+func (t Text) AsText() Text       { return nodeAsText(t) }

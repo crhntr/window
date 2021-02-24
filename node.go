@@ -5,6 +5,22 @@ import (
 	"syscall/js"
 )
 
+type AsElementer interface {
+	AsElement() Element
+}
+
+type AsTexter interface {
+	AsText() Text
+}
+
+func nodeAsElement(node js.Wrapper) Element {
+	return Element(node.JSValue())
+}
+
+func nodeAsText(node js.Wrapper) Text {
+	return Text(node.JSValue())
+}
+
 type NodeWrapper interface {
 	js.Wrapper
 
@@ -12,6 +28,9 @@ type NodeWrapper interface {
 }
 
 type Node interface {
+	AsElementer
+	AsTexter
+
 	NodeWrapper
 
 	IsNull() bool
@@ -192,11 +211,13 @@ func insertBefore(node, child js.Wrapper) bool {
 }
 
 func isEqualNode(node, other js.Wrapper) bool {
-	return node.JSValue().Call("isEqualNode", other).Bool()
+	value := node.JSValue()
+	return other.JSValue().IsNull() == value.IsNull() && node.JSValue().Call("isEqualNode", other).Bool()
 }
 
 func isSameNode(node, other js.Wrapper) bool {
-	return node.JSValue().Call("isSameNode", other).Bool()
+	value := node.JSValue()
+	return !other.JSValue().IsNull() && !value.IsNull() && value.Call("isSameNode", other).Bool()
 }
 
 func normalize(node js.Wrapper) { node.JSValue().Call("normalize") }
@@ -275,7 +296,13 @@ type ChildNode interface {
 	ReplaceWith(...Node)
 }
 
-func childNodeRemove(node js.Wrapper) { node.JSValue().Call("remove") }
+func childNodeRemove(node js.Wrapper) {
+	v := node.JSValue()
+	if v.IsNull() {
+		return
+	}
+	v.Call("remove")
+}
 func childNodeBefore(node js.Wrapper, list []Node) {
 	node.JSValue().Call("before", nodesToInterfaceSlice(list)...)
 }

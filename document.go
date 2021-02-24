@@ -144,6 +144,9 @@ func (document document) IsSameNode(node Node) bool { return isSameNode(document
 
 func (document document) IsEqualNode(node Node) bool { return isEqualNode(document, node) }
 
+func (document document) AsElement() Element { return nodeAsElement(document) }
+func (document document) AsText() Text       { return nodeAsText(document) }
+
 type DocumentFragment js.Value
 
 func (doc DocumentFragment) IsNull() bool { return doc.JSValue().IsNull() }
@@ -209,6 +212,9 @@ func (doc DocumentFragment) JSValue() js.Value { return js.Value(doc) }
 func (doc DocumentFragment) IsSameNode(node Node) bool { return isSameNode(doc, node) }
 
 func (doc DocumentFragment) IsEqualNode(node Node) bool { return isEqualNode(doc, node) }
+
+func (doc DocumentFragment) AsElement() Element { return nodeAsElement(doc) }
+func (doc DocumentFragment) AsText() Text       { return nodeAsText(doc) }
 
 type HTMLCollection js.Value
 

@@ -42,7 +42,7 @@ func (selection Selection) Truthy() bool               { return selection.JSValu
 func (selection Selection) IsNull() bool               { return selection.JSValue().IsNull() }
 func (selection Selection) IsUndefined() bool          { return selection.JSValue().IsUndefined() }
 func (selection Selection) InstanceOf(t js.Value) bool { return selection.JSValue().InstanceOf(t) }
-func (selection Selection) String() string { return selection.JSValue().Call("toString").String() }
+func (selection Selection) String() string             { return selection.JSValue().Call("toString").String() }
 
 func (document document) NewRange() Range {
 	return Range(win.Get("Range").New())
@@ -102,14 +102,14 @@ func (ran Range) CreateContextualFragment(content string) DocumentFragment {
 
 func (ran Range) JSValue() js.Value { return js.Value(ran) }
 
-func (ran Range) Get(key string) js.Value           { return ran.Get(key) }
-func (ran Range) Equal(w js.Value) bool             { return ran.Equal(w) }
-func (ran Range) Set(key string, value interface{}) { ran.Set(key, value) }
+func (ran Range) Get(key string) js.Value           { return ran.JSValue().Get(key) }
+func (ran Range) Equal(w js.Value) bool             { return ran.JSValue().Equal(w) }
+func (ran Range) Set(key string, value interface{}) { ran.JSValue().Set(key, value) }
 func (ran Range) Call(m string, args ...interface{}) js.Value {
-	return ran.Call(m, args...)
+	return ran.JSValue().Call(m, args...)
 }
-func (ran Range) Type() js.Type              { return ran.Type() }
-func (ran Range) Truthy() bool               { return ran.Truthy() }
-func (ran Range) IsNull() bool               { return ran.IsNull() }
-func (ran Range) IsUndefined() bool          { return ran.IsUndefined() }
-func (ran Range) InstanceOf(t js.Value) bool { return ran.InstanceOf(t) }
+func (ran Range) Type() js.Type              { return ran.JSValue().Type() }
+func (ran Range) Truthy() bool               { return ran.JSValue().Truthy() }
+func (ran Range) IsNull() bool               { return ran.JSValue().IsNull() }
+func (ran Range) IsUndefined() bool          { return ran.JSValue().IsUndefined() }
+func (ran Range) InstanceOf(t js.Value) bool { return ran.JSValue().InstanceOf(t) }
