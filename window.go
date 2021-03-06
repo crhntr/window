@@ -44,7 +44,3 @@ func AddEventListenerChannel(eventName string, c chan Event) func() {
 func URL() (*url.URL, error) {
 	return url.Parse(Get("location").Get("href").String())
 }
-
-func Body() Element {
-	return Element(Document.Call("getElementsByTagName", "body").Index(0))
-}

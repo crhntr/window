@@ -147,6 +147,12 @@ func (document document) IsEqualNode(node Node) bool { return isEqualNode(docume
 func (document document) AsElement() Element { return nodeAsElement(document) }
 func (document document) AsText() Text       { return nodeAsText(document) }
 
+func (document document) Body() Element { return Element(document.Get("body")) }
+func (document document) Head() Element { return Element(document.Get("head")) }
+
+func (document document) Title() string         { return document.Get("title").String() }
+func (document document) SetTitle(title string) { document.Set("title", title) }
+
 type DocumentFragment js.Value
 
 func (doc DocumentFragment) IsNull() bool { return doc.JSValue().IsNull() }
