@@ -133,6 +133,9 @@ func appendChild(node, child js.Wrapper) ChildNode {
 }
 
 func removeChild(node, child js.Wrapper) Node {
+	if child.JSValue().IsNull() {
+		return nil
+	}
 	return nodeFactory(node.JSValue().Call("removeChild", child))
 }
 
