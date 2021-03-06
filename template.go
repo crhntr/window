@@ -12,29 +12,31 @@ var (
 	templates *template.Template
 )
 
-func LoadTemplates(tmp *template.Template, selector string) error {
-	var err error
+func LoadTemplates(t *template.Template, query string) (*template.Template, error) {
+	if t == nil {
+		t = template.New("")
+	}
+	if query == "" {
+		query = `script[type="text/go-template"]`
+	}
 
+	for _, el := range Document.QuerySelectorAll(query).ElementSlice() {
+		templateBody := el.InnerHTML()
+		var err error
+		templates, err = t.New(el.Attribute("id")).Parse(templateBody)
+		if err != nil {
+			Console.Log("failed parsing template", err.Error(), templateBody)
+			break
+		}
+	}
+
+	return templates, nil
+}
+
+func SetTemplates(t *template.Template) {
 	once.Do(func() {
-		if tmp == nil {
-			tmp = template.New("")
-		}
-
-		if selector == "" {
-			selector = `script[type="text/go-template"]`
-		}
-
-		for _, el := range Document.QuerySelectorAll(selector).ElementSlice() {
-			templateBody := el.InnerHTML()
-			templates, err = tmp.New(el.Attribute("id")).Parse(templateBody)
-			if err != nil {
-				Console.Log("failed parsing template", err.Error(), templateBody)
-				break
-			}
-		}
+		templates = t
 	})
-
-	return err
 }
 
 func Templates() []*template.Template {
