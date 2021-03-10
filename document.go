@@ -155,6 +155,10 @@ func (document document) SetTitle(title string) { document.Set("title", title) }
 
 type DocumentFragment js.Value
 
+func NewDocumentFragment() DocumentFragment {
+	return DocumentFragment(win.Get("DocumentFragment").New())
+}
+
 func (doc DocumentFragment) IsNull() bool { return doc.JSValue().IsNull() }
 
 func (doc DocumentFragment) Append(nodes ...Node)  { appendNodes(doc, nodes) }
