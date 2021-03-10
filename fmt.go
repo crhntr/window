@@ -32,10 +32,10 @@ func recreateFormatVerb(f fmt.State, verb rune) string {
 		}
 	}
 
-	if w, ok := f.Width(); ok {
+	if w, isSet := f.Width(); isSet {
 		verbWithFlags = append(verbWithFlags, []rune(strconv.Itoa(w))...)
 	}
-	if w, ok := f.Precision(); ok {
+	if w, isSet := f.Precision(); isSet {
 		verbWithFlags = append(verbWithFlags, '.')
 		verbWithFlags = append(verbWithFlags, []rune(strconv.Itoa(w))...)
 	}
