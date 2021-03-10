@@ -23,7 +23,7 @@ func (safe safe) Format(f fmt.State, verb rune) {
 }
 
 func recreateFormatVerb(f fmt.State, verb rune) string {
-	var array [50]rune
+	array := make([]rune, 50)
 	verbWithFlags := append(array[:0], '%')
 
 	for _, flag := range "+-# 0" {
