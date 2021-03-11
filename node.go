@@ -334,6 +334,14 @@ func (list NodeList) Slice() []ChildNode {
 	return nodes
 }
 
+func (list NodeList) NodeSlice() []Node {
+	nodes := make([]Node, 0, list.Length())
+	for i := 0; i < list.Length(); i++ {
+		nodes = append(nodes, list.Item(i))
+	}
+	return nodes
+}
+
 func (list NodeList) ElementSlice() []Element {
 	nodes := make([]Element, 0, list.Length())
 	for i := 0; i < list.Length(); i++ {

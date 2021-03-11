@@ -201,6 +201,21 @@ func (document document) CreateDocumentFragment(format string, a ...interface{})
 	return DocumentFragment(document.Call("createDocumentFragment", content))
 }
 
+func (document document) CreateDocumentFragmentFromTemplate(name string, data interface{}) (DocumentFragment, error) {
+	var buf bytes.Buffer
+	err := templates.ExecuteTemplate(&buf, name, data)
+	if err != nil {
+		return DocumentFragment(js.Null()), err
+	}
+
+	div := document.CreateElement("div")
+	div.SetInnerHTML(strings.TrimSpace(buf.String()))
+
+	f := NewDocumentFragment()
+	f.ReplaceChildren(div.ChildNodes().NodeSlice()...)
+	return f, nil
+}
+
 func (doc DocumentFragment) Children() HTMLCollection {
 	return HTMLCollection(doc.JSValue().Get("children"))
 }
