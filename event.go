@@ -36,6 +36,8 @@ func (ev Event) TargetElement() Element { return Element(ev.Target()) }
 
 func (ev Event) PreventDefault() { ev.Call("preventDefault") }
 
+func (ev Event) StopPropagation() { ev.Call("stopPropagation") }
+
 func (ev Event) Log() { js.Global().Get("console").Call("log", ev) }
 
 // KeyCode can be used on keyup and keydown events
