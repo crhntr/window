@@ -3,6 +3,7 @@
 package window
 
 import (
+	"sync"
 	"syscall/js"
 )
 
@@ -11,6 +12,8 @@ type ServerEventHandlerFunc = func(id, data string)
 type EventSource struct {
 	js.Value
 	handlers map[string][]js.Func
+	sync.Mutex
+	closed bool
 
 	LogEvents bool
 }
@@ -23,6 +26,9 @@ func NewEventSource(srcURL string) *EventSource {
 }
 
 func (es *EventSource) Handle(eventName string, handler ServerEventHandlerFunc) {
+	es.Lock()
+	es.Unlock()
+
 	fn := js.FuncOf(func(_ js.Value, args []js.Value) interface{} {
 		msg := args[0]
 
@@ -44,9 +50,13 @@ func (es *EventSource) Handle(eventName string, handler ServerEventHandlerFunc) 
 }
 
 func (es *EventSource) Close() {
-	if es == nil {
+	es.Lock()
+	es.Unlock()
+
+	if es == nil || es.closed {
 		return
 	}
+	es.closed = true
 
 	for eventName, fns := range es.handlers {
 		for _, fn := range fns {
@@ -54,6 +64,7 @@ func (es *EventSource) Close() {
 			fn.Release()
 		}
 	}
+	es.handlers = nil
 
 	if es.Truthy() {
 		es.Value.Call("close")
