@@ -102,7 +102,9 @@ func (el Element) Clone() Element {
 
 func (el Element) InnerText() string { return el.JSValue().Get("innerText").String() }
 
-func (el Element) SetInnerText(format string, a ...interface{}) { el.JSValue().Set("innerText", fmt.Sprintf(format, a...)) }
+func (el Element) SetInnerText(format string, a ...interface{}) {
+	el.JSValue().Set("innerText", fmt.Sprintf(format, a...))
+}
 
 func (el Element) InnerHTML() string { return el.JSValue().Get("innerHTML").String() }
 
