@@ -42,5 +42,5 @@ func AddEventListenerChannel(eventName string, c chan Event) func() {
 }
 
 func URL() (*url.URL, error) {
-	return url.Parse(Get("location").Get("href").String())
+	return url.Parse(Location.String())
 }
