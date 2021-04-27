@@ -56,7 +56,7 @@ func (location) Replace(url string) {
 }
 
 func (location) String() string {
-	return win.Get("location").String()
+	return win.Get("location").Call("toString").String()
 }
 
 // URL parses the URL string. It may panic if parse fails;
