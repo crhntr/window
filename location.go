@@ -39,6 +39,10 @@ func (location) Hash() string {
 	return win.Get("location").Get("hash").String()
 }
 
+func (location) SetHash(fragment string) {
+	win.Get("location").Set("hash", fragment)
+}
+
 func (location) Origin() string {
 	return win.Get("location").Get("origin").String()
 }
