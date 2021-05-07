@@ -35,11 +35,11 @@ func (es *EventSource) Handle(eventName string, handler ServerEventHandlerFunc) 
 		data := msg.Get("data").String()
 		id := msg.Get("lastEventId").String()
 
-		go handler(id, data)
-
 		if es.LogEvents {
-			js.Global().Get("console").Call("log", "EventSource", id, js.Global().Get("JSON").Call("parse", data))
+			js.Global().Get("console").Call("log", "EventSource", eventName, id, js.Global().Get("JSON").Call("parse", data))
 		}
+
+		go handler(id, data)
 
 		return nil
 	})
