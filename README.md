@@ -1,4 +1,4 @@
-⚠️  NOT STABLE YET. MAJOR API CHANGES ARE OCCURING OFTEN. ⚠️ 
+⚠️  THIS IS NOT STABLE YET. I AM MAKING MAJOR API CHANGES OFTEN. ⚠️ 
 
 # Window
 A Go package for Document Object Model (DOM) stuff when GOOS=js and GOARCH=wasm.
