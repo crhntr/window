@@ -267,3 +267,7 @@ func (el Element) ReplaceWith(node ...Node) { childNodeReplaceWith(el, node) }
 
 func (el Element) AsElement() Element { return nodeAsElement(el) }
 func (el Element) AsText() Text       { return nodeAsText(el) }
+
+func (el Element) DispatchEvent(e Event) {
+	el.Call("dispatchEvent", e)
+}

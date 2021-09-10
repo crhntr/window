@@ -153,6 +153,10 @@ func (document document) Head() Element { return Element(document.Get("head")) }
 func (document document) Title() string         { return document.Get("title").String() }
 func (document document) SetTitle(title string) { document.Set("title", title) }
 
+func (document document) DispatchEvent(e Event) {
+	document.Call("dispatchEvent", e)
+}
+
 type DocumentFragment js.Value
 
 func NewDocumentFragment() DocumentFragment {
