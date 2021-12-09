@@ -1,11 +1,15 @@
-//go:build js && wasm
-// +build js,wasm
+//go:build js && wasm && !tinygo
+// +build js,wasm,!tinygo
 
 package window
 
 import (
+	"bytes"
+	"fmt"
 	"html/template"
+	"strings"
 	"sync"
+	"syscall/js"
 )
 
 var (
@@ -45,4 +49,37 @@ func Templates() []*template.Template {
 		return nil
 	}
 	return templates.Templates()
+}
+
+func (document document) NewElementFromTemplate(name string, data interface{}) (Element, error) {
+	buf := bytes.NewBuffer(nil)
+	err := templates.ExecuteTemplate(buf, name, data)
+	if err != nil {
+		return Element(js.Null()), err
+	}
+
+	div := document.Call("createElement", "div")
+	div.Set("innerHTML", strings.TrimSpace(buf.String()))
+
+	v := div.Get("firstChild")
+	if !v.Truthy() {
+		return Element(js.Null()), fmt.Errorf("could not get created element")
+	}
+
+	return Element(v), nil
+}
+
+func (document document) CreateDocumentFragmentFromTemplate(name string, data interface{}) (DocumentFragment, error) {
+	var buf bytes.Buffer
+	err := templates.ExecuteTemplate(&buf, name, data)
+	if err != nil {
+		return DocumentFragment(js.Null()), err
+	}
+
+	div := document.CreateElement("div")
+	div.SetInnerHTML(strings.TrimSpace(buf.String()))
+
+	f := NewDocumentFragment()
+	f.ReplaceChildren(div.ChildNodes().NodeSlice()...)
+	return f, nil
 }
