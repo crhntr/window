@@ -1,1 +1,4 @@
 .idea
+*.wasm
+*.test
+**wasm_exec.js

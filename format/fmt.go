@@ -1,4 +1,4 @@
-package window
+package format
 
 import (
 	"fmt"
@@ -23,7 +23,7 @@ func (safe safe) Format(f fmt.State, verb rune) {
 }
 
 func recreateFormatVerb(f fmt.State, verb rune) string {
-	array := make([]rune, 50)
+	var array [50]rune
 	verbWithFlags := append(array[:0], '%')
 
 	for _, flag := range "+-# 0" {
