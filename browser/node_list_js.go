@@ -1,4 +1,4 @@
-package window
+package browser
 
 import (
 	"syscall/js"

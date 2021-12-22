@@ -1,6 +1,6 @@
 //go:build js
 
-package window
+package browser
 
 import (
 	"syscall/js"
@@ -20,8 +20,10 @@ func nodeToValue(n dom.Node) js.Value {
 		return js.Value(val)
 	case DocumentFragment:
 		return js.Value(val)
-	case document:
+	case Document:
 		return js.ValueOf(val)
+	case Text:
+		return js.Value(val)
 	default:
 		panic("unknown node type")
 	}
@@ -37,16 +39,41 @@ func valueToNode(val js.Value) dom.Node {
 	case dom.NodeTypeDocumentFragment:
 		return DocumentFragment(val)
 	case dom.NodeTypeDocument:
-		return document(val)
+		return Document(val)
+	case dom.NodeTypeText:
+		return Text(val)
 	default:
 		panic("unknown node type")
 	}
 }
 
-func nodesToEmptyInterfaceSlice(nodes []dom.Node) []interface{} {
+func valueToChildNode(val js.Value) dom.ChildNode {
+	if val.IsNull() || val.IsUndefined() {
+		return nil
+	}
+	switch nodeType(val) {
+	case dom.NodeTypeElement:
+		return Element(val)
+	case dom.NodeTypeDocumentFragment:
+		return DocumentFragment(val)
+	case dom.NodeTypeText:
+		return Text(val)
+	default:
+		panic("unknown node type")
+	}
+}
+
+func valueToElement(val js.Value) dom.Element {
+	if val.IsNull() || val.IsUndefined() {
+		return nil
+	}
+	return Element(val)
+}
+
+func nodesToValuesAsEmptyInterfaceSlice(nodes []dom.ChildNode) []interface{} {
 	list := make([]interface{}, len(nodes))
 	for i := range nodes {
-		list[i] = nodes[i]
+		list[i] = nodeToValue(nodes[i])
 	}
 	return list
 }
