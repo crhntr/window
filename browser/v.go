@@ -1,6 +1,6 @@
 //go:build js
 
-package window
+package browser
 
 import (
 	"syscall/js"
@@ -10,25 +10,27 @@ import (
 
 type v js.Value
 
-func (val v) nodeType() dom.NodeType  { return nodeType(js.Value(val).Get("nodeType")) }
-func (val v) isConnected() bool       { return js.Value(val).Get("isConnected").Bool() }
-func (val v) ownerDocument() dom.Node { return valueToNode(js.Value(val).Get("ownerDocument")) }
+func (val v) nodeType() dom.NodeType { return nodeType(js.Value(val)) }
+func (val v) isConnected() bool      { return js.Value(val).Get("isConnected").Bool() }
+func (val v) ownerDocument() dom.Document {
+	return valueToNode(js.Value(val).Get("ownerDocument")).(dom.Document)
+}
 func (val v) getRootNode(composed bool) dom.Node {
 	return valueToNode(js.Value(val).Call("getRootNode", getRootNodeOptions(composed)))
 }
-func (val v) parentNode() dom.Node       { return valueToNode(js.Value(val).Get("parentNode")) }
-func (val v) parentElement() dom.Element { return Element(js.Value(val).Call("parentElement")) }
+func (val v) parentNode() dom.ChildNode  { return valueToChildNode(js.Value(val).Get("parentNode")) }
+func (val v) parentElement() dom.Element { return Element(js.Value(val).Get("parentElement")) }
 func (val v) hasChildNodes() bool        { return js.Value(val).Call("hasChildNodes").Bool() }
-func (val v) childNodes() dom.NodeList   { return NodeList(js.Value(val).Call("childNodes")) }
-func (val v) firstChild() dom.Node       { return valueToNode(js.Value(val).Call("firstChild")) }
-func (val v) lastChild() dom.Node        { return valueToNode(js.Value(val).Call("lastChild")) }
-func (val v) previousSibling() dom.Node {
-	return valueToNode(js.Value(val).Call("previousSibling"))
+func (val v) childNodes() dom.NodeList   { return NodeList(js.Value(val).Get("childNodes")) }
+func (val v) firstChild() dom.ChildNode  { return valueToChildNode(js.Value(val).Get("firstChild")) }
+func (val v) lastChild() dom.ChildNode   { return valueToChildNode(js.Value(val).Get("lastChild")) }
+func (val v) previousSibling() dom.ChildNode {
+	return valueToChildNode(js.Value(val).Get("previousSibling"))
 }
-func (val v) nextSibling() dom.Node { return valueToNode(js.Value(val).Call("nextSibling")) }
-func (val v) nodeValue() string     { return js.Value(val).Call("nodeValue").String() }
-func (val v) textContent() string   { return js.Value(val).Call("textContent").String() }
-func (val v) normalize()            { js.Value(val).Call("normalize") }
+func (val v) nextSibling() dom.ChildNode { return valueToChildNode(js.Value(val).Get("nextSibling")) }
+func (val v) nodeValue() string          { return js.Value(val).Call("nodeValue").String() }
+func (val v) textContent() string        { return js.Value(val).Get("textContent").String() }
+func (val v) normalize()                 { js.Value(val).Call("normalize") }
 func (val v) cloneNode(deep bool) dom.Node {
 	return valueToNode(js.Value(val).Call("cloneNode", deep))
 }
@@ -44,34 +46,36 @@ func (val v) compareDocumentPosition() dom.DocumentPosition {
 func (val v) contains(other dom.Node) bool {
 	return js.Value(val).Call("contains", nodeToValue(other)).Bool()
 }
-func (val v) insertBefore(node, child dom.Node) dom.Node {
-	return valueToNode(js.Value(val).Call("insertBefore", node, child))
+func (val v) insertBefore(node, child dom.ChildNode) dom.ChildNode {
+	return valueToChildNode(js.Value(val).Call("insertBefore", nodeToValue(node), nodeToValue(child)))
 }
-func (val v) appendChild(node dom.Node) dom.Node {
-	return valueToNode(js.Value(val).Call("appendChild", node))
+func (val v) appendChild(node dom.ChildNode) dom.ChildNode {
+	return valueToChildNode(js.Value(val).Call("appendChild", nodeToValue(node)))
 }
-func (val v) replaceChild(node, child dom.Node) dom.Node {
-	return valueToNode(js.Value(val).Call("replaceChild", node, child))
+func (val v) replaceChild(node, child dom.ChildNode) dom.ChildNode {
+	return valueToChildNode(js.Value(val).Call("replaceChild", nodeToValue(node), nodeToValue(child)))
 }
-func (val v) removeChild(node dom.Node) dom.Node {
-	return valueToNode(js.Value(val).Call("removeChild", node))
+func (val v) removeChild(node dom.ChildNode) dom.ChildNode {
+	return valueToChildNode(js.Value(val).Call("removeChild", nodeToValue(node)))
 }
-func (val v) children() dom.NodeList { return NodeList(js.Value(val).Call("children")) }
+func (val v) children() dom.ElementCollection {
+	return ElementCollection(js.Value(val).Get("children"))
+}
 func (val v) firstElementChild() dom.Element {
-	return Element(js.Value(val).Call("firstElementChild"))
+	return valueToElement(js.Value(val).Get("firstElementChild"))
 }
 func (val v) lastElementChild() dom.Element {
-	return Element(js.Value(val).Call("lastElementChild"))
+	return valueToElement(js.Value(val).Get("lastElementChild"))
 }
 func (val v) childElementCount() int { return js.Value(val).Get("childElementCount").Int() }
-func (val v) prepend(nodes []dom.Node) dom.Node {
-	return Element(js.Value(val).Call("prepend", nodesToEmptyInterfaceSlice(nodes)...))
+func (val v) prepend(nodes []dom.ChildNode) {
+	js.Value(val).Call("prepend", nodesToValuesAsEmptyInterfaceSlice(nodes)...)
 }
-func (val v) append(nodes []dom.Node) dom.Node {
-	return document(js.Value(val).Call("append", nodesToEmptyInterfaceSlice(nodes)...))
+func (val v) append(nodes []dom.ChildNode) {
+	js.Value(val).Call("append", nodesToValuesAsEmptyInterfaceSlice(nodes)...)
 }
-func (val v) replaceChildren(nodes []dom.Node) dom.Node {
-	return document(js.Value(val).Call("replaceChildren", nodesToEmptyInterfaceSlice(nodes)...))
+func (val v) replaceChildren(nodes []dom.ChildNode) {
+	js.Value(val).Call("replaceChildren", nodesToValuesAsEmptyInterfaceSlice(nodes)...)
 }
 func (val v) getElementsByTagName(name string) dom.ElementCollection {
 	return ElementCollection(js.Value(val).Call("getElementsByTagName", name))
@@ -91,15 +95,6 @@ func (val v) querySelectorAll(query string) dom.NodeList {
 func (val v) createElement(localName string) dom.Element {
 	return Element(js.Value(val).Call("createElement", localName))
 }
-func (val v) createElementIs(localName, is string) dom.Element {
-	return Element(js.Value(val).Call("createElementIs", localName, js.ValueOf(map[string]interface{}{"is": is})))
-}
-func (val v) createElementNS(namespace, localName string) dom.Element {
-	return Element(js.Value(val).Call("createElementNS", namespace, localName))
-}
-func (val v) createElementNSIS(namespace, localName, is string) dom.Element {
-	return Element(js.Value(val).Call("createElementNS", namespace, localName, js.ValueOf(map[string]interface{}{"is": is})))
-}
 func (val v) createTextNode(text string) dom.Text {
 	return Text(js.Value(val).Call("createTextNode", text))
 }
@@ -107,7 +102,11 @@ func (val v) tagName() string   { return js.Value(val).Get("tagName").String() }
 func (val v) iD() string        { return js.Value(val).Get("id").String() }
 func (val v) className() string { return js.Value(val).Get("className").String() }
 func (val v) getAttribute(name string) string {
-	return js.Value(val).Call("getAttribute", name).String()
+	value := js.Value(val).Call("getAttribute", name)
+	if value.IsNull() || value.IsUndefined() {
+		return ""
+	}
+	return value.String()
 }
 func (val v) getAttributeNS(namespace, name string) string {
 	return js.Value(val).Call("getAttributeNS", namespace, name).String()
@@ -121,13 +120,13 @@ func (val v) removeAttributeNS(namespace, name string) {
 	js.Value(val).Call("removeAttributeNS", namespace, name)
 }
 func (val v) toggleAttribute(name string) bool {
-	return js.Value(val).Call("toggleAttribute", name, true).Bool()
+	return js.Value(val).Call("toggleAttribute", name).Bool()
 }
 func (val v) hasAttribute(name string) bool {
 	return js.Value(val).Call("hasAttribute", name).Bool()
 }
 func (val v) hasAttributeNS(namespace, name string) bool {
-	return js.Value(val).Call("setAttribute", namespace, name).Bool()
+	return js.Value(val).Call("hasAttributeNS", namespace, name).Bool()
 }
 func (val v) closest(selector string) dom.Element {
 	return Element(js.Value(val).Call("closest", selector))
@@ -144,6 +143,7 @@ func (val v) setInnerText(s string) { js.Value(val).Set("innerText", s) }
 func (val v) innerText() string     { return js.Value(val).Get("innerText").String() }
 
 func (val v) data() string         { return js.Value(val).Get("data").String() }
+func (val v) setData(s string)     { js.Value(val).Set("data", s) }
 func (val v) split(n int) dom.Text { return Text(js.Value(val).Call("split", n)) }
 func (val v) wholeText() string    { return js.Value(val).Call("wholeText").String() }
 

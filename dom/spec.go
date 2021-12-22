@@ -2,40 +2,83 @@ package dom
 
 // Node is based on a subset of the methods and types in
 // https://dom.spec.whatwg.org/#interface-node as of 2021-12-10
+//
+// ParentNode and ChildNode contain more of the methods from the spec.
 type Node interface {
 	NodeType() NodeType
+	CloneNode(deep bool) Node
+	IsSameNode(other Node) bool
+	TextContent() string
+}
+
+type ChildNode interface {
+	Node
 
 	IsConnected() bool
-	OwnerDocument() Node
-	GetRootNode(composed bool) Node
+	OwnerDocument() Document
 	ParentNode() Node
 	ParentElement() Element
-	HasChildNodes() bool
-	ChildNodes() NodeList
-	FirstChild() Node
-	LastChild() Node
-	PreviousSibling() Node
-	NextSibling() Node
+	PreviousSibling() ChildNode
+	NextSibling() ChildNode
 
-	NodeValue() string
-	TextContent() string
-	Normalize()
+	// CompareDocumentPosition(other Node) DocumentPosition
 
-	CloneNode(deep bool) Node
-	IsEqualNode(other Node) bool
-	IsSameNode(other Node) bool
-
-	CompareDocumentPosition() DocumentPosition
-	Contains(other Node) bool
+	// Length should be based on https://dom.spec.whatwg.org/#concept-node-length
+	Length() int
 
 	// LookupPrefix(namespace string)
 	// LookupNamespaceURI(prefix string)
 	// IsDefaultNamespace(namespace string) bool
+}
 
-	InsertBefore(node, child Node) Node
-	AppendChild(node Node) Node
-	ReplaceChild(node, child Node) Node
-	RemoveChild(node Node) Node
+// ParentNode is based on https://dom.spec.whatwg.org/#interface-parentnode. It also includes some fields and
+// methods from Node that only make sense for non-leaf nodes such as Element, DocumentFragment, and Document.
+type ParentNode interface {
+	Node
+	ElementParent
+
+	Prepend(nodes ...ChildNode)
+	Append(nodes ...ChildNode)
+	ReplaceChildren(nodes ...ChildNode)
+
+	// the following methods are from node; however, they only make sense for parent nodes
+
+	HasChildNodes() bool
+	ChildNodes() NodeList
+	FirstChild() ChildNode
+	LastChild() ChildNode
+	InsertBefore(node, child ChildNode) ChildNode
+	AppendChild(node ChildNode) ChildNode
+	ReplaceChild(node, child ChildNode) ChildNode
+	RemoveChild(node ChildNode) ChildNode
+
+	NodeContainer
+}
+
+type NodeContainer interface {
+	Contains(other Node) bool
+}
+
+type ElementParent interface {
+	Children() ElementCollection
+	FirstElementChild() Element
+	LastElementChild() Element
+	ChildElementCount() int
+	GetElementsByTagName(name string) ElementCollection
+	GetElementsByClassName(name string) ElementCollection
+}
+
+type SelectorMethods interface {
+	Closest(selector string) Element
+	Matches(selector string) bool
+
+	QuerySelector(query string) Element
+	QuerySelectorAll(query string) NodeList
+}
+
+// Normalizer may be implemented by a Node and should follow https://dom.spec.whatwg.org/#dom-node-normalize
+type Normalizer interface {
+	Normalize()
 }
 
 type DocumentPosition int
@@ -71,51 +114,76 @@ const (
 	NodeTypeNotation
 )
 
+func (nt NodeType) String() string {
+	switch nt {
+	case NodeTypeElement:
+		return "Element"
+	case NodeTypeAttribute:
+		return "Attribute"
+	case NodeTypeText:
+		return "Text"
+	case NodeTypeCdataSection:
+		return "CdataSection"
+	case NodeTypeEntityReference:
+		return "EntityReference"
+	case NodeTypeEntity:
+		return "Entity"
+	case NodeTypeProcessingInstruction:
+		return "ProcessingInstruction"
+	case NodeTypeComment:
+		return "Comment"
+	case NodeTypeDocument:
+		return "Document"
+	case NodeTypeDocumentType:
+		return "DocumentType"
+	case NodeTypeDocumentFragment:
+		return "DocumentFragment"
+	case NodeTypeNotation:
+		return "Notation"
+
+	default:
+		fallthrough
+	case NodeTypeUnknown:
+		return "Unknown"
+	}
+}
+
 type NodeList interface {
 	Length() int
 	Item(int) Node
 }
 
 type Text interface {
+	ChildNode
+
 	Data() string
-	Split(n int) Text
-	WholeText() string
+	SetData(string)
+
+	// Split(n int) Text // CONSIDER: maybe implement this
+	// WholeText() string // CONSIDER: maybe implement this
 }
 
 type Document interface {
 	Node
-	ParentNode
 
 	CreateElement(localName string) Element
-	CreateElementIs(localName, is string) Element
-	CreateElementNS(namespace, localName string) Element
-	CreateElementNSIS(namespace, localName, is string) Element
-
-	// CreateDocumentFragment() Node
-
 	CreateTextNode(text string) Text
+
+	// CreateDocumentFragment() node
+
+	NodeContainer
+
+	Body() Element
+	Head() Element
 }
 
-type ParentNode interface {
-	Children() NodeList
-	FirstElementChild() Element
-	LastElementChild() Element
-	ChildElementCount() int
-
-	Prepend(nodes ...Node) Node
-	Append(nodes ...Node) Node
-	ReplaceChildren(nodes ...Node) Node
-
-	GetElementsByTagName(name string) ElementCollection
-	GetElementsByTagNameNS(namespace, name string) ElementCollection
-	GetElementsByClassName(name string) ElementCollection
-
-	QuerySelector(query string) Element
-	QuerySelectorAll(query string) NodeList
-}
-
+// Element is based on
+//
+// InnerText methods are ignored due to rendering complexity; however, implementations may add them
+// based on InnerTextSetter.
 type Element interface {
 	Node
+	ChildNode
 	ParentNode
 
 	TagName() string
@@ -123,22 +191,18 @@ type Element interface {
 	ClassName() string
 
 	GetAttribute(name string) string
-	GetAttributeNS(namespace, name string) string
 	SetAttribute(name, value string)
-	SetAttributeNS(namespace, name, value string)
 	RemoveAttribute(name string)
-	RemoveAttributeNS(namespace, name string)
 	ToggleAttribute(name string) bool
 	HasAttribute(name string) bool
-	HasAttributeNS(namespace, name string) bool
-
-	Closest(selector string) Element
-	Matches(selector string) bool
 
 	SetInnerHTML(s string)
 	InnerHTML() string
 	SetOuterHTML(s string)
 	OuterHTML() string
+}
+
+type InnerTextSetter interface {
 	SetInnerText(s string)
 	InnerText() string
 }
@@ -155,5 +219,12 @@ type ElementCollection interface {
 }
 
 type DocumentFragment interface {
+	ParentNode
+}
+
+type Comment interface {
 	Node
+
+	Data() string
+	SetData() string
 }

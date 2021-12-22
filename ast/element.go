@@ -1,6 +1,7 @@
-package template
+package ast
 
 import (
+	"bytes"
 	"strings"
 
 	"golang.org/x/net/html"
@@ -9,281 +10,178 @@ import (
 )
 
 type Element struct {
-	Node html.Node
+	node *html.Node
 }
 
-func (e *Element) NodeType() dom.NodeType {
-	return nodeType(e.Node.Type)
-}
+// Node
 
-func (e *Element) IsConnected() bool {
-	//TODO implement me
-	panic("implement me")
-}
+func (e *Element) NodeType() dom.NodeType         { return nodeType(e.node.Type) }
+func (e *Element) IsConnected() bool              { return isConnected(e.node) }
+func (e *Element) OwnerDocument() dom.Document    { return ownerDocument(e.node) }
+func (e *Element) ParentNode() dom.Node           { return parentNode(e.node) }
+func (e *Element) ParentElement() dom.Element     { return parentElement(e.node) }
+func (e *Element) PreviousSibling() dom.ChildNode { return previousSibling(e.node) }
+func (e *Element) NextSibling() dom.ChildNode     { return nextSibling(e.node) }
+func (e *Element) TextContent() string            { return textContent(e.node) }
+func (e *Element) CloneNode(deep bool) dom.Node   { return cloneNode(e.node, deep) }
+func (e *Element) IsSameNode(other dom.Node) bool { return isSameNode(e.node, other) }
+func (e *Element) Length() int                    { return e.ChildNodes().Length() }
 
-func (e *Element) OwnerDocument() dom.Node {
-	//TODO implement me
-	panic("implement me")
-}
+// ParentNode
 
-func (e *Element) GetRootNode(composed bool) dom.Node {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) ParentNode() dom.Node {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) ParentElement() dom.Element {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) HasChildNodes() bool {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) ChildNodes() dom.NodeList {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) FirstChild() dom.Node {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) LastChild() dom.Node {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) PreviousSibling() dom.Node {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) NextSibling() dom.Node {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) NodeValue() string {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) TextContent() string {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) Normalize() {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) CloneNode(deep bool) dom.Node {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) IsEqualNode(other dom.Node) bool {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) IsSameNode(other dom.Node) bool {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) CompareDocumentPosition() dom.DocumentPosition {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) Contains(other dom.Node) bool {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) InsertBefore(node, child dom.Node) dom.Node {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) AppendChild(node dom.Node) dom.Node {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) ReplaceChild(node, child dom.Node) dom.Node {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) RemoveChild(node dom.Node) dom.Node {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) Children() dom.NodeList {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) FirstElementChild() dom.Element {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) LastElementChild() dom.Element {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) ChildElementCount() int {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) Prepend(nodes ...dom.Node) dom.Node {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) Append(nodes ...dom.Node) dom.Node {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) ReplaceChildren(nodes ...dom.Node) dom.Node {
-	//TODO implement me
-	panic("implement me")
-}
-
+func (e *Element) Children() dom.ElementCollection        { return children(e.node) }
+func (e *Element) FirstElementChild() dom.Element         { return firstElementChild(e.node) }
+func (e *Element) LastElementChild() dom.Element          { return lastElementChild(e.node) }
+func (e *Element) ChildElementCount() int                 { return childElementCount(e.node) }
+func (e *Element) Prepend(nodes ...dom.ChildNode)         { prependNodes(e.node, nodes) }
+func (e *Element) Append(nodes ...dom.ChildNode)          { appendNodes(e.node, nodes) }
+func (e *Element) ReplaceChildren(nodes ...dom.ChildNode) { replaceChildren(e.node, nodes) }
 func (e *Element) GetElementsByTagName(name string) dom.ElementCollection {
-	//TODO implement me
-	panic("implement me")
+	return getElementsByTagName(e.node, name)
 }
-
-func (e *Element) GetElementsByTagNameNS(namespace, name string) dom.ElementCollection {
-	//TODO implement me
-	panic("implement me")
-}
-
 func (e *Element) GetElementsByClassName(name string) dom.ElementCollection {
-	//TODO implement me
-	panic("implement me")
+	return getElementsByClassName(e.node, name)
 }
 
-func (e *Element) QuerySelector(query string) dom.Element {
-	//TODO implement me
-	panic("implement me")
+//func (e *Element) QuerySelector(query string) dom.Element     { return querySelector(e.node, query) }
+//func (e *Element) QuerySelectorAll(query string) dom.NodeList { return querySelectorAll(e.node, query) }
+//func (e *Element) Closest(selector string) dom.Element        { return closest(e.node, selector) }
+//func (e *Element) Matches(selector string) bool               { return matches(e.node, selector) }
+
+func (e *Element) HasChildNodes() bool          { return hasChildNodes(e.node) }
+func (e *Element) ChildNodes() dom.NodeList     { return childNodes(e.node) }
+func (e *Element) FirstChild() dom.ChildNode    { return firstChild(e.node) }
+func (e *Element) LastChild() dom.ChildNode     { return lastChild(e.node) }
+func (e *Element) Contains(other dom.Node) bool { return contains(e.node, other) }
+func (e *Element) InsertBefore(node, child dom.ChildNode) dom.ChildNode {
+	return insertBefore(e.node, node, child)
 }
-
-func (e *Element) QuerySelectorAll(query string) dom.NodeList {
-	//TODO implement me
-	panic("implement me")
+func (e *Element) AppendChild(node dom.ChildNode) dom.ChildNode { return appendChild(e.node, node) }
+func (e *Element) ReplaceChild(node, child dom.ChildNode) dom.ChildNode {
+	return replaceChild(e.node, node, child)
 }
+func (e *Element) RemoveChild(node dom.ChildNode) dom.ChildNode { return removeChild(e.node, node) }
 
-func (e *Element) TagName() string { return strings.ToUpper(e.Node.Data) }
+// Element
 
-func (e *Element) ID() string {
-	//TODO implement me
-	panic("implement me")
-}
+func (e *Element) TagName() string                 { return strings.ToUpper(e.node.Data) }
+func (e *Element) ID() string                      { return getAttribute(e.node, "id") }
+func (e *Element) ClassName() string               { return getAttribute(e.node, "class") }
+func (e *Element) GetAttribute(name string) string { return getAttribute(e.node, name) }
 
-func (e *Element) ClassName() string {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) GetAttribute(name string) string {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) GetAttributeNS(namespace, name string) string {
-	//TODO implement me
-	panic("implement me")
+func getAttribute(node *html.Node, name string) string {
+	name = strings.ToLower(name)
+	for _, att := range node.Attr {
+		if att.Key == name {
+			return att.Val
+		}
+	}
+	return ""
 }
 
 func (e *Element) SetAttribute(name, value string) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) SetAttributeNS(namespace, name, value string) {
-	//TODO implement me
-	panic("implement me")
+	name = strings.ToLower(name)
+	for index, att := range e.node.Attr {
+		if att.Key == name {
+			e.node.Attr[index].Val = value
+		}
+	}
+	e.node.Attr = append(e.node.Attr, html.Attribute{
+		Key: name, Val: value,
+	})
 }
 
 func (e *Element) RemoveAttribute(name string) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) RemoveAttributeNS(namespace, name string) {
-	//TODO implement me
-	panic("implement me")
+	name = strings.ToLower(name)
+	filtered := e.node.Attr[:0]
+	for _, att := range e.node.Attr {
+		if att.Key == name {
+			continue
+		}
+		filtered = append(filtered, att)
+	}
+	e.node.Attr = filtered
 }
 
 func (e *Element) ToggleAttribute(name string) bool {
-	//TODO implement me
-	panic("implement me")
+	name = strings.ToLower(name)
+	if e.HasAttribute(name) {
+		e.RemoveAttribute(name)
+		return false
+	}
+	e.SetAttribute(name, "")
+	return true
 }
 
 func (e *Element) HasAttribute(name string) bool {
-	//TODO implement me
-	panic("implement me")
+	name = strings.ToLower(name)
+	for _, att := range e.node.Attr {
+		if att.Key == name {
+			return true
+		}
+	}
+	return false
 }
 
-func (e *Element) HasAttributeNS(namespace, name string) bool {
-	//TODO implement me
-	panic("implement me")
+func (e *Element) isNamed(name string) bool {
+	return isNamed(e.node, name)
 }
 
-func (e *Element) Closest(selector string) dom.Element {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) Matches(selector string) bool {
-	//TODO implement me
-	panic("implement me")
+func isNamed(node *html.Node, name string) bool {
+	if node == nil || node.Type != html.ElementNode {
+		return false
+	}
+	id := getAttribute(node, "id")
+	nm := getAttribute(node, "name")
+	return (id != "" && id == name) || (nm != "" && nm == name)
 }
 
 func (e *Element) SetInnerHTML(s string) {
-	//TODO implement me
-	panic("implement me")
+	nodes, err := html.ParseFragment(strings.NewReader(s), &html.Node{Type: html.ElementNode})
+	if err != nil {
+		panic(err)
+	}
+	clearChildren(e.node)
+	for _, n := range nodes {
+		e.node.AppendChild(n)
+	}
 }
 
 func (e *Element) InnerHTML() string {
-	//TODO implement me
-	panic("implement me")
+	var buf bytes.Buffer
+	c := e.node.FirstChild
+	for c != nil {
+		err := html.Render(&buf, c)
+		if err != nil {
+			panic(err)
+		}
+		c = c.NextSibling
+	}
+	return buf.String()
 }
 
 func (e *Element) SetOuterHTML(s string) {
-	//TODO implement me
-	panic("implement me")
+	nodes, err := html.ParseFragment(strings.NewReader(s), &html.Node{Type: html.ElementNode})
+	if err != nil {
+		panic(err)
+	}
+	if len(nodes) == 0 {
+		return
+	}
+	if e.node.Parent == nil {
+		panic("browser: SetOuterHTML called on an unattached node")
+	}
+	for _, node := range nodes {
+		e.node.Parent.InsertBefore(node, e.node)
+	}
+	e.node.Parent.RemoveChild(e.node)
 }
 
 func (e *Element) OuterHTML() string {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) SetInnerText(s string) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (e *Element) InnerText() string {
-	//TODO implement me
-	panic("implement me")
+	var buf bytes.Buffer
+	err := html.Render(&buf, e.node)
+	if err != nil {
+		panic(err)
+	}
+	return buf.String()
 }
