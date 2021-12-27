@@ -25,49 +25,69 @@ func ElementTagName(t *testing.T, create CreateElementFunc) {
 
 func ElementAttribute(t *testing.T, create CreateElementFunc) {
 	t.Run("attributes", func(t *testing.T) {
-		el, ok := create(t, `<div data-key="initial value"></div>`).(dom.Element)
-		if !ok {
-			t.Errorf("result from create is not a dom.Element")
+		createElement := func(t *testing.T) dom.Element {
+			el, ok := create(t, `<div data-key="initial value"></div>`).(dom.Element)
+			if !ok {
+				t.Errorf("result from create is not a dom.Element")
+			}
+			return el
 		}
 
 		t.Run("hasAttribute", func(t *testing.T) {
+			el := createElement(t)
 			please.ExpectTrue(t, el.HasAttribute("data-key"))
 			please.ExpectFalse(t, el.HasAttribute("data-not-set"))
 		})
 
 		t.Run("getAttribute", func(t *testing.T) {
+			el := createElement(t)
 			please.ExpectEqual(t,
-				el.GetAttribute("data-key"),
+				el.Attribute("data-key"),
 				"initial value",
 			)
 		})
 
 		t.Run("setAttribute update existing", func(t *testing.T) {
+			el := createElement(t)
 			el.SetAttribute("data-key", "second value")
 			please.ExpectEqual(t,
-				el.GetAttribute("data-key"),
+				el.Attribute("data-key"),
 				"second value",
 			)
 		})
 
+		t.Run("setAttribute multiple times", func(t *testing.T) {
+			el := createElement(t)
+			el.SetAttribute("data-key", "a")
+			el.SetAttribute("data-key", "b")
+			el.SetAttribute("data-key", "c")
+			please.ExpectEqual(t,
+				el.Attribute("data-key"),
+				"c",
+			)
+		})
+
 		t.Run("removeAttribute", func(t *testing.T) {
+			el := createElement(t)
 			el.RemoveAttribute("data-key")
 			please.ExpectEqual(t,
-				el.GetAttribute("data-key"),
+				el.Attribute("data-key"),
 				"",
 			)
 			please.ExpectFalse(t, el.HasAttribute("data-key"))
 		})
 
 		t.Run("setAttribute insert new", func(t *testing.T) {
+			el := createElement(t)
 			el.SetAttribute("data-new", "change")
 			please.ExpectEqual(t,
-				el.GetAttribute("data-new"),
+				el.Attribute("data-new"),
 				"change",
 			)
 		})
 
 		t.Run("toggleAttribute", func(t *testing.T) {
+			el := createElement(t)
 			please.ExpectTrue(t, el.ToggleAttribute("data-boolean"))
 			please.ExpectTrue(t, el.HasAttribute("data-boolean"))
 			please.ExpectFalse(t, el.ToggleAttribute("data-boolean"))
@@ -75,6 +95,7 @@ func ElementAttribute(t *testing.T, create CreateElementFunc) {
 		})
 
 		t.Run("className", func(t *testing.T) {
+			el := createElement(t)
 			please.ExpectEqual(t, el.ClassName(), "")
 
 			el.SetAttribute("class", "style1")
@@ -88,6 +109,7 @@ func ElementAttribute(t *testing.T, create CreateElementFunc) {
 		})
 
 		t.Run("id", func(t *testing.T) {
+			el := createElement(t)
 			please.ExpectEqual(t, el.ID(), "")
 
 			el.SetAttribute("id", "id-01")
@@ -123,7 +145,7 @@ func ElementInnerHTML(t *testing.T, create CreateElementFunc) {
 			please.ExpectEqual(t, h1.TagName(), "H1")
 
 			a := h1.FirstElementChild()
-			please.ExpectEqual(t, a.GetAttribute("href"), "/")
+			please.ExpectEqual(t, a.Attribute("href"), "/")
 
 			text := a.FirstChild().(dom.Text)
 			please.ExpectEqual(t, text.Data(), "Hello, world!")
@@ -311,6 +333,66 @@ func ElementParent(t *testing.T, createParent CreateParentNodeFunc, createEl Cre
 			please.ExpectEqual(t, parent.GetElementsByClassName("first child").Length(), 1)
 			please.ExpectEqual(t, parent.GetElementsByClassName("child").Length(), 2)
 			please.ExpectEqual(t, parent.GetElementsByClassName("random-class-name").Length(), 0)
+		})
+	})
+}
+
+func TestElementInsertAdjacentHTML(t *testing.T, createEl CreateChildNodeFunc) {
+	t.Run("InsertAdjacentHTML", func(t *testing.T) {
+		setup := func(t *testing.T, createEl CreateChildNodeFunc) (dom.Element, dom.Element, dom.Element) {
+			parent := createEl(t).(dom.Element)
+			parent.SetInnerHTML(`<div id="a1"></div><div id="a3"><span></span></div><div id="a5"></div>`)
+			a1 := parent.FirstChild().(dom.Element)
+			a3 := a1.NextSibling().(dom.Element)
+			a5 := a3.NextSibling().(dom.Element)
+
+			span := a3.FirstChild()
+			please.ExpectEqual(t, span.(dom.Element).TagName(), "SPAN")
+			return a1, a3, a5
+		}
+
+		t.Run(dom.PositionBeforeBegin.String(), func(t *testing.T) {
+			a1, a3, _ := setup(t, createEl)
+			a3.InsertAdjacentHTML(dom.PositionBeforeBegin, `<div id="a2"></div>`)
+			please.ExpectEqual(t, a3.PreviousSibling().(dom.Element).Attribute("id"), "a2")
+			please.ExpectEqual(t, a1.NextSibling().(dom.Element).Attribute("id"), "a2")
+		})
+		t.Run(dom.PositionAfterBegin.String(), func(t *testing.T) {
+			t.Run("el is not empty", func(t *testing.T) {
+				_, a3, _ := setup(t, createEl)
+				a3.InsertAdjacentHTML(dom.PositionAfterBegin, `<span id="first"></span>`)
+				please.ExpectEqual(t, a3.FirstChild().(dom.Element).Attribute("id"), "first")
+			})
+
+			t.Run("el isempty", func(t *testing.T) {
+				parent := createEl(t).(dom.Element)
+				parent.SetInnerHTML(`<div id="empty"></div>`)
+				empty := parent.FirstChild().(dom.Element)
+				empty.InsertAdjacentHTML(dom.PositionAfterBegin, `<span id="added"></span>`)
+				please.ExpectEqual(t, empty.FirstChild().(dom.Element).Attribute("id"), "added")
+			})
+		})
+		t.Run(dom.PositionBeforeEnd.String(), func(t *testing.T) {
+			_, a3, _ := setup(t, createEl)
+			a3.InsertAdjacentHTML(dom.PositionBeforeEnd, `<span id="last"></span>`)
+			please.ExpectEqual(t, a3.LastChild().(dom.Element).Attribute("id"), "last")
+		})
+		t.Run(dom.PositionAfterEnd.String(), func(t *testing.T) {
+			t.Run("el is not the only Element in parent", func(t *testing.T) {
+				_, a3, a5 := setup(t, createEl)
+				a3.InsertAdjacentHTML(dom.PositionAfterEnd, `<div id="a4"></div>`)
+				please.ExpectEqual(t, a3.NextSibling().(dom.Element).Attribute("id"), "a4")
+				please.ExpectEqual(t, a5.PreviousSibling().(dom.Element).Attribute("id"), "a4")
+			})
+
+			t.Run("el is the only Element in parent", func(t *testing.T) {
+				parent := createEl(t).(dom.Element)
+				parent.SetInnerHTML(`<div id="only-element"></div>`)
+				onlyEl := parent.FirstChild().(dom.Element)
+				onlyEl.InsertAdjacentHTML(dom.PositionAfterEnd, `<div id="added"></div>`)
+				please.ExpectEqual(t, onlyEl.NextSibling().(dom.Element).Attribute("id"), "added")
+				please.ExpectEqual(t, parent.LastChild().(dom.Element).Attribute("id"), "added")
+			})
 		})
 	})
 }

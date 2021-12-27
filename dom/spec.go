@@ -190,7 +190,7 @@ type Element interface {
 	ID() string
 	ClassName() string
 
-	GetAttribute(name string) string
+	Attribute(name string) string
 	SetAttribute(name, value string)
 	RemoveAttribute(name string)
 	ToggleAttribute(name string) bool
@@ -200,6 +200,21 @@ type Element interface {
 	InnerHTML() string
 	SetOuterHTML(s string)
 	OuterHTML() string
+
+	InsertAdjacentHTML(InsertAdjacentHTMLPosition, string)
+}
+
+type InsertAdjacentHTMLPosition string
+
+const (
+	PositionBeforeBegin = InsertAdjacentHTMLPosition("beforebegin")
+	PositionAfterBegin  = InsertAdjacentHTMLPosition("afterbegin")
+	PositionBeforeEnd   = InsertAdjacentHTMLPosition("beforeend")
+	PositionAfterEnd    = InsertAdjacentHTMLPosition("afterend")
+)
+
+func (pos InsertAdjacentHTMLPosition) String() string {
+	return string(pos)
 }
 
 type InnerTextSetter interface {

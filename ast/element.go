@@ -13,6 +13,10 @@ type Element struct {
 	node *html.Node
 }
 
+func NewElement(node *html.Node) *Element {
+	return &Element{node: node}
+}
+
 // Node
 
 func (e *Element) NodeType() dom.NodeType         { return nodeType(e.node.Type) }
@@ -64,10 +68,10 @@ func (e *Element) RemoveChild(node dom.ChildNode) dom.ChildNode { return removeC
 
 // Element
 
-func (e *Element) TagName() string                 { return strings.ToUpper(e.node.Data) }
-func (e *Element) ID() string                      { return getAttribute(e.node, "id") }
-func (e *Element) ClassName() string               { return getAttribute(e.node, "class") }
-func (e *Element) GetAttribute(name string) string { return getAttribute(e.node, name) }
+func (e *Element) TagName() string              { return strings.ToUpper(e.node.Data) }
+func (e *Element) ID() string                   { return getAttribute(e.node, "id") }
+func (e *Element) ClassName() string            { return getAttribute(e.node, "class") }
+func (e *Element) Attribute(name string) string { return getAttribute(e.node, name) }
 
 func getAttribute(node *html.Node, name string) string {
 	name = strings.ToLower(name)
@@ -184,4 +188,49 @@ func (e *Element) OuterHTML() string {
 		panic(err)
 	}
 	return buf.String()
+}
+
+func (e *Element) InsertAdjacentHTML(pos dom.InsertAdjacentHTMLPosition, text string) {
+	nodes, err := html.ParseFragment(strings.NewReader(text), &html.Node{Type: html.ElementNode})
+	if err != nil {
+		panic(err)
+	}
+
+	switch pos {
+	case dom.PositionBeforeBegin:
+		n := e.node
+		for i := len(nodes) - 1; i >= 0; i-- {
+			e.node.Parent.InsertBefore(nodes[i], n)
+			n = n.PrevSibling
+		}
+	case dom.PositionAfterBegin:
+		n := e.node.FirstChild
+		if n == nil {
+			for _, nd := range nodes {
+				e.node.AppendChild(nd)
+			}
+			return
+		}
+		for i := len(nodes) - 1; i >= 0; i-- {
+			e.node.InsertBefore(nodes[i], n)
+			n = n.PrevSibling
+		}
+	case dom.PositionBeforeEnd:
+		for _, n := range nodes {
+			e.node.AppendChild(n)
+		}
+	case dom.PositionAfterEnd:
+		if e.node.Parent.LastChild == e.node {
+			for _, n := range nodes {
+				e.node.Parent.AppendChild(n)
+			}
+		} else {
+			n := e.node.NextSibling
+			for i := range nodes {
+				nd := nodes[len(nodes)-1-i]
+				e.node.InsertBefore(nd, n)
+				n = nd
+			}
+		}
+	}
 }

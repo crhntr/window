@@ -156,3 +156,7 @@ func (val v) item(index int) dom.Element { return Element(js.Value(val).Call("it
 func (val v) namedItem(name string) dom.Element {
 	return Element(js.Value(val).Call("namedItem", name))
 }
+
+func (val v) insertAdjacentHTML(pos dom.InsertAdjacentHTMLPosition, text string) {
+	js.Value(val).Call("insertAdjacentHTML", string(pos), text)
+}

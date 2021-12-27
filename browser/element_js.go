@@ -54,7 +54,7 @@ func (e Element) QuerySelectorAll(query string) dom.NodeList { return v(e).query
 func (e Element) TagName() string                     { return v(e).tagName() }
 func (e Element) ID() string                          { return v(e).iD() }
 func (e Element) ClassName() string                   { return v(e).className() }
-func (e Element) GetAttribute(name string) string     { return v(e).getAttribute(name) }
+func (e Element) Attribute(name string) string        { return v(e).getAttribute(name) }
 func (e Element) SetAttribute(name, value string)     { v(e).setAttribute(name, value) }
 func (e Element) RemoveAttribute(name string)         { v(e).removeAttribute(name) }
 func (e Element) ToggleAttribute(name string) bool    { return v(e).toggleAttribute(name) }
@@ -70,3 +70,7 @@ func (e Element) SetInnerText(s string) { v(e).setInnerText(s) }
 func (e Element) InnerText() string     { return v(e).innerText() }
 
 func (e Element) Length() int { return v(e).length() }
+
+func (e Element) InsertAdjacentHTML(pos dom.InsertAdjacentHTMLPosition, text string) {
+	v(e).insertAdjacentHTML(pos, text)
+}

@@ -36,6 +36,7 @@ func TestElement(t *testing.T) {
 	domtest.ChildNode(t, createElementNode)
 	domtest.ParentNode(t, createElementParentNode, createElementNode)
 	domtest.ParentNode(t, createElementParentNode, createElementNode)
+	domtest.TestElementInsertAdjacentHTML(t, createElementNode)
 
 	domtest.ElementTextContent(t, createElement)
 	domtest.ElementTagName(t, createElement)

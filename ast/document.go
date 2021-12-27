@@ -48,7 +48,7 @@ func (d *Document) TextContent() string { return textContent(d.node) }
 
 // Document
 
-func (d *Document) CreateElement(localName string) dom.Element {
+func (*Document) CreateElement(localName string) dom.Element {
 	a := atom.Lookup([]byte(localName))
 	if a == 0 {
 		return &Element{
@@ -69,7 +69,7 @@ func (d *Document) CreateElement(localName string) dom.Element {
 	}
 }
 
-func (d *Document) CreateTextNode(text string) dom.Text {
+func (*Document) CreateTextNode(text string) dom.Text {
 	return &Text{
 		node: &html.Node{
 			Type: html.TextNode,
