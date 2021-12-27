@@ -160,3 +160,9 @@ func (val v) namedItem(name string) dom.Element {
 func (val v) insertAdjacentHTML(pos dom.InsertAdjacentHTMLPosition, text string) {
 	js.Value(val).Call("insertAdjacentHTML", string(pos), text)
 }
+
+func (val v) value() string         { return js.Value(val).Get("value").String() }
+func (val v) setValue(value string) { js.Value(val).Set("value", value) }
+
+func (val v) disabled() bool            { return js.Value(val).Get("disabled").Bool() }
+func (val v) setDisabled(disabled bool) { js.Value(val).Set("disabled", disabled) }

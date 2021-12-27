@@ -3,6 +3,7 @@
 package browser
 
 import (
+	"strings"
 	"syscall/js"
 
 	"github.com/crhntr/window/dom"
@@ -16,6 +17,8 @@ func nodeToValue(n dom.Node) js.Value {
 		return js.Null()
 	}
 	switch val := n.(type) {
+	case Input:
+		return js.Value(val)
 	case Element:
 		return js.Value(val)
 	case DocumentFragment:
@@ -35,7 +38,7 @@ func valueToNode(val js.Value) dom.Node {
 	}
 	switch nodeType(val) {
 	case dom.NodeTypeElement:
-		return Element(val)
+		return valueToElement(val)
 	case dom.NodeTypeDocumentFragment:
 		return DocumentFragment(val)
 	case dom.NodeTypeDocument:
@@ -53,7 +56,7 @@ func valueToChildNode(val js.Value) dom.ChildNode {
 	}
 	switch nodeType(val) {
 	case dom.NodeTypeElement:
-		return Element(val)
+		return valueToElement(val)
 	case dom.NodeTypeDocumentFragment:
 		return DocumentFragment(val)
 	case dom.NodeTypeText:
@@ -67,7 +70,12 @@ func valueToElement(val js.Value) dom.Element {
 	if val.IsNull() || val.IsUndefined() {
 		return nil
 	}
-	return Element(val)
+	switch strings.ToLower(v(val).tagName()) {
+	case "input", "select":
+		return Input(val)
+	default:
+		return Element(val)
+	}
 }
 
 func nodesToValuesAsEmptyInterfaceSlice(nodes []dom.ChildNode) []interface{} {

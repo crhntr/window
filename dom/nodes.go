@@ -204,6 +204,17 @@ type Element interface {
 	InsertAdjacentHTML(InsertAdjacentHTMLPosition, string)
 }
 
+// InputElement may be implemented by input Elements
+type InputElement interface {
+	Element
+
+	Value() string
+	SetValue(value string)
+
+	Disabled() bool
+	SetDisabled(disabled bool)
+}
+
 type InsertAdjacentHTMLPosition string
 
 const (
