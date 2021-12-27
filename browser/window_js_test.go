@@ -1,4 +1,3 @@
-//go:build js && wasm
+//go:build js && wasm && wasm
 
 package browser
-
