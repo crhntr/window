@@ -78,6 +78,9 @@ func (val v) append(nodes []dom.ChildNode) {
 func (val v) replaceChildren(nodes []dom.ChildNode) {
 	js.Value(val).Call("replaceChildren", nodesToValuesAsEmptyInterfaceSlice(nodes)...)
 }
+func (val v) getElementById(id string) dom.Element {
+	return Element(js.Value(val).Call("getElementById", id))
+}
 func (val v) getElementsByTagName(name string) dom.ElementCollection {
 	return ElementCollection(js.Value(val).Call("getElementsByTagName", name))
 }

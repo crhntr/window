@@ -40,6 +40,7 @@ func (e *Element) ChildElementCount() int                 { return childElementC
 func (e *Element) Prepend(nodes ...dom.ChildNode)         { prependNodes(e.node, nodes) }
 func (e *Element) Append(nodes ...dom.ChildNode)          { appendNodes(e.node, nodes) }
 func (e *Element) ReplaceChildren(nodes ...dom.ChildNode) { replaceChildren(e.node, nodes) }
+func (e *Element) GetElementByID(id string) dom.Element   { return getElementByID(e.node, id) }
 func (e *Element) GetElementsByTagName(name string) dom.ElementCollection {
 	return getElementsByTagName(e.node, name)
 }

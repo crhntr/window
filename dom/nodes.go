@@ -64,6 +64,7 @@ type ElementParent interface {
 	FirstElementChild() Element
 	LastElementChild() Element
 	ChildElementCount() int
+	GetElementByID(id string) Element
 	GetElementsByTagName(name string) ElementCollection
 	GetElementsByClassName(name string) ElementCollection
 }

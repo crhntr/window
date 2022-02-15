@@ -53,6 +53,7 @@ func (in Input) Prepend(nodes ...dom.ChildNode)               { v(in).prepend(no
 func (in Input) Append(nodes ...dom.ChildNode)                { v(in).append(nodes) }
 func (in Input) ReplaceChildren(nodes ...dom.ChildNode)       { v(in).replaceChildren(nodes) }
 
+func (in Input) GetElementByID(id string) dom.Element { return v(in).getElementById(id) }
 func (in Input) GetElementsByTagName(name string) dom.ElementCollection {
 	return v(in).getElementsByTagName(name)
 }

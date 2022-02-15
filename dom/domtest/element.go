@@ -210,14 +210,14 @@ func ElementOuterHTML(t *testing.T, create CreateElementFunc) {
 
 func ElementQueries(t *testing.T, create CreateElementFunc) {
 	makeUL := func(t *testing.T) dom.Element {
-		innerHTML := /* language=html */ `<ul>
+		innerHTML := /* language=html */ `<ul id="page-list">
 	<li id="empty"></li>
 	<li id="middle">
 		<a href="https://example.com">Example</a>
 	</li>
 	<li id="input">
 		<label>
-			ome description
+			some description
 			<i class="fa fa-cloud">
 			</i><input name="item">	
 		</label>
@@ -235,6 +235,18 @@ func ElementQueries(t *testing.T, create CreateElementFunc) {
 		}
 		return ul
 	}
+
+	t.Run("getElementById", func(t *testing.T) {
+		ul := makeUL(t)
+		empty := ul.GetElementByID("empty")
+		please.ExpectTrue(t, empty != nil)
+		please.ExpectEqual(t, empty.TagName(), "LI")
+		please.ExpectEqual(t, empty.ChildElementCount(), 0)
+
+		pageList := ul.GetElementByID("page-list")
+		please.ExpectEqual(t, pageList.TagName(), "UL")
+		please.ExpectEqual(t, pageList.ChildElementCount(), 3)
+	})
 
 	t.Run("getElementsByTagName", func(t *testing.T) {
 		ul := makeUL(t)

@@ -49,6 +49,7 @@ func (d DocumentFragment) ChildElementCount() int                 { return v(d).
 func (d DocumentFragment) Prepend(nodes ...dom.ChildNode)         { v(d).prepend(nodes) }
 func (d DocumentFragment) Append(nodes ...dom.ChildNode)          { v(d).append(nodes) }
 func (d DocumentFragment) ReplaceChildren(nodes ...dom.ChildNode) { v(d).replaceChildren(nodes) }
+func (d DocumentFragment) GetElementByID(id string) dom.Element   { return v(d).getElementById(id) }
 func (d DocumentFragment) GetElementsByTagName(name string) dom.ElementCollection {
 	return v(d).getElementsByTagName(name)
 }

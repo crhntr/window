@@ -255,6 +255,20 @@ func clearChildren(node *html.Node) {
 	node.LastChild = nil
 }
 
+func getElementByID(node *html.Node, id string) dom.Element {
+	var nodeWithID *html.Node
+	walkNodes(node, func(n *html.Node) bool {
+		if id == getAttribute(n, "id") {
+			nodeWithID = n
+			return true
+		}
+		return false
+	})
+	if nodeWithID == nil {
+		return nil
+	}
+	return &Element{node: nodeWithID}
+}
 func getElementsByTagName(node *html.Node, name string) dom.ElementCollection {
 	name = strings.ToUpper(name)
 	var list ElementList

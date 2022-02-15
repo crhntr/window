@@ -45,6 +45,7 @@ func (e Element) LastElementChild() dom.Element                { return v(e).las
 func (e Element) Prepend(nodes ...dom.ChildNode)               { v(e).prepend(nodes) }
 func (e Element) Append(nodes ...dom.ChildNode)                { v(e).append(nodes) }
 func (e Element) ReplaceChildren(nodes ...dom.ChildNode)       { v(e).replaceChildren(nodes) }
+func (e Element) GetElementByID(id string) dom.Element         { return v(e).getElementById(id) }
 func (e Element) GetElementsByTagName(name string) dom.ElementCollection {
 	return v(e).getElementsByTagName(name)
 }

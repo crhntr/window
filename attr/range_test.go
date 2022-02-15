@@ -7,6 +7,10 @@ import (
 )
 
 func TestRange(t *testing.T) {
+	// TODO: remove the skip
+	t.Log("this functionality is still a work in progress")
+	t.SkipNow()
+
 	t.Run("list of strings", func(t *testing.T) {
 		var data struct {
 			List []string
