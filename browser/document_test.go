@@ -1,4 +1,5 @@
 //go:build js && wasm
+// +build js,wasm
 
 package browser
 
@@ -7,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/crhntr/please"
+
 	"github.com/crhntr/window/dom/domtest"
 
 	"github.com/crhntr/window/dom"
