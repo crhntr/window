@@ -21,6 +21,10 @@ func ParseDocument(r io.Reader) (Document, error) {
 	return Document{node: node}, nil
 }
 
+func RenderDocument(w io.Writer, d Document) error {
+	return html.Render(w, d.node)
+}
+
 func (d *Document) Head() dom.Element {
 	head := firstElementWithTag(d.node, atom.Head.String())
 	if head == nil {
