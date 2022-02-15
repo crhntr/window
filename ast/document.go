@@ -1,6 +1,8 @@
 package ast
 
 import (
+	"io"
+
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 
@@ -9,6 +11,14 @@ import (
 
 type Document struct {
 	node *html.Node
+}
+
+func ParseDocument(r io.Reader) (Document, error) {
+	node, err := html.Parse(r)
+	if err != nil {
+		return Document{}, err
+	}
+	return Document{node: node}, nil
 }
 
 func (d *Document) Head() dom.Element {
