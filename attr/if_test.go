@@ -18,8 +18,8 @@ func (el dataWithBoolMethod) Show() bool { return el.show }
 
 func TestIf(t *testing.T) {
 	const (
-		trueHTML  = `<div data-attr-if="Show">Hello</div>`
-		falseHTML = `<div data-attr-if="Show" data-attr-template="Hello" data-attr-if-result="false"></div>`
+		trueHTML  = /* language=html */ `<div data-attr-if="Show">Hello</div>`
+		falseHTML = /* language=html */ `<div data-attr-if="Show" data-attr-template="Hello" data-attr-if-result="false"></div>`
 	)
 
 	t.Run("field is true", func(t *testing.T) {
@@ -119,9 +119,9 @@ func TestIf(t *testing.T) {
 
 func TestElse(t *testing.T) {
 	const (
-		templateHTML = `<div><div data-attr-if="Show">Hello</div><div data-attr-else="">Greetings</div></div>`
-		trueHTML     = `<div><div data-attr-if="Show">Hello</div><div data-attr-else="" data-attr-template="Greetings"></div></div>`
-		falseHTML    = `<div><div data-attr-if="Show" data-attr-template="Hello" data-attr-if-result="false"></div><div data-attr-else="">Greetings</div></div>`
+		templateHTML = /* language=html */ `<div><div data-attr-if="Show">Hello</div><div data-attr-else="">Greetings</div></div>`
+		trueHTML     = /* language=html */ `<div><div data-attr-if="Show">Hello</div><div data-attr-else="" data-attr-template="Greetings"></div></div>`
+		falseHTML    = /* language=html */ `<div><div data-attr-if="Show" data-attr-template="Hello" data-attr-if-result="false"></div><div data-attr-else="">Greetings</div></div>`
 	)
 
 	t.Run("field is true", func(t *testing.T) {

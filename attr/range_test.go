@@ -13,11 +13,11 @@ func TestRange(t *testing.T) {
 		}
 		data.List = append(data.List, "One", "Two", "Three")
 
-		el := CreateElement(t, `<ul data-attr-range="List"><li data-attr-text=""></li></ul>`)
+		el := CreateElement(t /* language=html */, `<ul data-attr-range="List"><li data-attr-text=""></li></ul>`)
 
 		err := Hydrate(el, data)
 		please.ExpectNilError(t, err)
 
-		please.ExpectEqual(t, el.OuterHTML(), `<ul data-attr-range="List"><li data-attr-range-index="0">One</li><li data-attr-range-index="1">Two</li><li data-attr-range-index="2">Three</li></ul>`)
+		please.ExpectEqual(t, el.OuterHTML() /* language=html */, `<ul data-attr-range="List"><li data-attr-range-index="0">One</li><li data-attr-range-index="1">Two</li><li data-attr-range-index="2">Three</li></ul>`)
 	})
 }
