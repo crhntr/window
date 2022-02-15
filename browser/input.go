@@ -74,12 +74,13 @@ func (in Input) HasAttribute(name string) bool       { return v(in).hasAttribute
 func (in Input) Closest(selector string) dom.Element { return v(in).closest(selector) }
 func (in Input) Matches(selector string) bool        { return v(in).matches(selector) }
 
-func (in Input) SetInnerHTML(s string) { v(in).setInnerHTML(s) }
-func (in Input) InnerHTML() string     { return v(in).innerHTML() }
-func (in Input) SetOuterHTML(s string) { v(in).setOuterHTML(s) }
-func (in Input) OuterHTML() string     { return v(in).outerHTML() }
-func (in Input) SetInnerText(s string) { v(in).setInnerText(s) }
-func (in Input) InnerText() string     { return v(in).innerText() }
+func (in Input) SetInnerHTML(s string)      { v(in).setInnerHTML(s) }
+func (in Input) InnerHTML() string          { return v(in).innerHTML() }
+func (in Input) SetOuterHTML(s string)      { v(in).setOuterHTML(s) }
+func (in Input) OuterHTML() string          { return v(in).outerHTML() }
+func (in Input) SetInnerText(s string)      { v(in).setInnerText(s) }
+func (in Input) InnerText() string          { return v(in).innerText() }
+func (in Input) SetTextContent(text string) { v(in).setTextContent(text) }
 
 func (in Input) Length() int { return v(in).length() }
 

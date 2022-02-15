@@ -272,9 +272,16 @@ func ElementTextContent(t *testing.T, create CreateElementFunc) {
 		return ul
 	}
 
-	div := makeDiv(t)
+	t.Run("get", func(t *testing.T) {
+		div := makeDiv(t)
 
-	please.ExpectEqual(t, div.TextContent(), `loading...alert("loading!")`)
+		please.ExpectEqual(t, div.TextContent(), `loading...alert("loading!")`)
+	})
+	t.Run("set", func(t *testing.T) {
+		div := makeDiv(t)
+		div.SetTextContent("Hello, world!")
+		please.ExpectEqual(t, div.OuterHTML(), `<div>Hello, world!</div>`)
+	})
 }
 
 func ElementParent(t *testing.T, createParent CreateParentNodeFunc, createEl CreateChildNodeFunc) {

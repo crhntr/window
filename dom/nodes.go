@@ -201,6 +201,7 @@ type Element interface {
 	InnerHTML() string
 	SetOuterHTML(s string)
 	OuterHTML() string
+	SetTextContent(s string)
 
 	InsertAdjacentHTML(InsertAdjacentHTMLPosition, string)
 }

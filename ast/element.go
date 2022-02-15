@@ -191,6 +191,11 @@ func (e *Element) OuterHTML() string {
 	return buf.String()
 }
 
+func (e *Element) SetTextContent(s string) {
+	clearChildren(e.node)
+	e.node.AppendChild(&html.Node{Type: html.TextNode, Data: s})
+}
+
 func (e *Element) InsertAdjacentHTML(pos dom.InsertAdjacentHTMLPosition, text string) {
 	nodes, err := html.ParseFragment(strings.NewReader(text), &html.Node{Type: html.ElementNode})
 	if err != nil {

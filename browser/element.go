@@ -22,7 +22,6 @@ func (e Element) FirstChild() dom.ChildNode      { return v(e).firstChild() }
 func (e Element) LastChild() dom.ChildNode       { return v(e).lastChild() }
 func (e Element) PreviousSibling() dom.ChildNode { return v(e).previousSibling() }
 func (e Element) NextSibling() dom.ChildNode     { return v(e).nextSibling() }
-func (e Element) TextContent() string            { return v(e).textContent() }
 func (e Element) Normalize()                     { v(e).normalize() }
 func (e Element) CloneNode(deep bool) dom.Node   { return v(e).cloneNode(deep) }
 func (e Element) IsSameNode(other dom.Node) bool { return v(e).isSameNode(other) }
@@ -66,12 +65,14 @@ func (e Element) HasAttribute(name string) bool       { return v(e).hasAttribute
 func (e Element) Closest(selector string) dom.Element { return v(e).closest(selector) }
 func (e Element) Matches(selector string) bool        { return v(e).matches(selector) }
 
-func (e Element) SetInnerHTML(s string) { v(e).setInnerHTML(s) }
-func (e Element) InnerHTML() string     { return v(e).innerHTML() }
-func (e Element) SetOuterHTML(s string) { v(e).setOuterHTML(s) }
-func (e Element) OuterHTML() string     { return v(e).outerHTML() }
-func (e Element) SetInnerText(s string) { v(e).setInnerText(s) }
-func (e Element) InnerText() string     { return v(e).innerText() }
+func (e Element) SetInnerHTML(s string)      { v(e).setInnerHTML(s) }
+func (e Element) InnerHTML() string          { return v(e).innerHTML() }
+func (e Element) SetOuterHTML(s string)      { v(e).setOuterHTML(s) }
+func (e Element) OuterHTML() string          { return v(e).outerHTML() }
+func (e Element) SetInnerText(s string)      { v(e).setInnerText(s) }
+func (e Element) InnerText() string          { return v(e).innerText() }
+func (e Element) TextContent() string        { return v(e).textContent() }
+func (e Element) SetTextContent(text string) { v(e).setTextContent(text) }
 
 func (e Element) Length() int { return v(e).length() }
 

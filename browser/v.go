@@ -31,6 +31,7 @@ func (val v) previousSibling() dom.ChildNode {
 func (val v) nextSibling() dom.ChildNode { return valueToChildNode(js.Value(val).Get("nextSibling")) }
 func (val v) nodeValue() string          { return js.Value(val).Call("nodeValue").String() }
 func (val v) textContent() string        { return js.Value(val).Get("textContent").String() }
+func (val v) setTextContent(text string) { js.Value(val).Set("textContent", text) }
 func (val v) normalize()                 { js.Value(val).Call("normalize") }
 func (val v) cloneNode(deep bool) dom.Node {
 	return valueToNode(js.Value(val).Call("cloneNode", deep))
