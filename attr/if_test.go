@@ -18,12 +18,13 @@ func (el dataWithBoolMethod) Show() bool { return el.show }
 
 func TestIf(t *testing.T) {
 	const (
-		trueHTML  = /* language=html */ `<div data-attr-if="Show">Hello</div>`
-		falseHTML = /* language=html */ `<div data-attr-if="Show" data-attr-template="Hello" data-attr-if-result="false"></div>`
+		templateHTML = /* language=html */ `<div data-attr-if="Show">Hello</div>`
+		trueHTML     = templateHTML
+		falseHTML    = /* language=html */ `<div data-attr-if="Show" data-attr-template="Hello" hidden=""></div>`
 	)
 
 	t.Run("field is true", func(t *testing.T) {
-		el := CreateElement(t, trueHTML)
+		el := CreateElement(t, templateHTML)
 		err := Hydrate(el, dataWithBoolField{
 			Show: true,
 		})
@@ -32,7 +33,7 @@ func TestIf(t *testing.T) {
 	})
 
 	t.Run("field is false", func(t *testing.T) {
-		el := CreateElement(t, trueHTML)
+		el := CreateElement(t, templateHTML)
 		err := Hydrate(el, dataWithBoolField{
 			Show: false,
 		})
@@ -41,7 +42,7 @@ func TestIf(t *testing.T) {
 	})
 
 	t.Run("method returns true", func(t *testing.T) {
-		el := CreateElement(t, trueHTML)
+		el := CreateElement(t, templateHTML)
 		data := dataWithBoolMethod{
 			show: true,
 		}
@@ -51,7 +52,7 @@ func TestIf(t *testing.T) {
 	})
 
 	t.Run("method returns false", func(t *testing.T) {
-		el := CreateElement(t, trueHTML)
+		el := CreateElement(t, templateHTML)
 		data := dataWithBoolMethod{
 			show: false,
 		}
@@ -61,7 +62,7 @@ func TestIf(t *testing.T) {
 	})
 
 	t.Run("toggle", func(t *testing.T) {
-		el := CreateElement(t, trueHTML)
+		el := CreateElement(t, templateHTML)
 		data := dataWithBoolMethod{
 			show: false,
 		}
@@ -120,8 +121,8 @@ func TestIf(t *testing.T) {
 func TestElse(t *testing.T) {
 	const (
 		templateHTML = /* language=html */ `<div><div data-attr-if="Show">Hello</div><div data-attr-else="">Greetings</div></div>`
-		trueHTML     = /* language=html */ `<div><div data-attr-if="Show">Hello</div><div data-attr-else="" data-attr-template="Greetings"></div></div>`
-		falseHTML    = /* language=html */ `<div><div data-attr-if="Show" data-attr-template="Hello" data-attr-if-result="false"></div><div data-attr-else="">Greetings</div></div>`
+		trueHTML     = /* language=html */ `<div><div data-attr-if="Show">Hello</div><div data-attr-else="" data-attr-template="Greetings" hidden=""></div></div>`
+		falseHTML    = /* language=html */ `<div><div data-attr-if="Show" data-attr-template="Hello" hidden=""></div><div data-attr-else="">Greetings</div></div>`
 	)
 
 	t.Run("field is true", func(t *testing.T) {

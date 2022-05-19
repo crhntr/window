@@ -10,9 +10,10 @@ import (
 const (
 	TemplateDirective = "data-attr-template"
 
-	IfDirective       = "data-attr-if"
-	IfResultDirective = "data-attr-if-result"
-	ElseDirective     = "data-attr-else"
+	HiddenDirective = "hidden"
+
+	IfDirective   = "data-attr-if"
+	ElseDirective = "data-attr-else"
 
 	RangeDirective         = "data-attr-range"
 	RangeIndexDirective    = "data-attr-range-index"
@@ -21,17 +22,16 @@ const (
 )
 
 func Hydrate(node dom.Element, data interface{}) error {
-	return hydrate(node, reflect.ValueOf(data))
+	return HydrateValue(node, reflect.ValueOf(data))
 }
 
-func hydrate(node dom.Element, data reflect.Value) error {
+func HydrateValue(node dom.Element, data reflect.Value) error {
 	if data.Kind() != reflect.Struct {
 		return errors.New("data must be a struct")
 	}
 
 	if node.HasAttribute(IfDirective) {
-		_, err := handleIfDirective(node, data)
-		if err != nil {
+		if err := handleConditionals(node, data); err != nil {
 			return err
 		}
 	}
@@ -45,7 +45,7 @@ func hydrate(node dom.Element, data reflect.Value) error {
 
 	children := node.Children()
 	for i := 0; i < children.Length(); i++ {
-		err := hydrate(children.Item(i), data)
+		err := HydrateValue(children.Item(i), data)
 		if err != nil {
 			continue
 		}

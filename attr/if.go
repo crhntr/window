@@ -8,6 +8,18 @@ import (
 	"github.com/crhntr/window/dom"
 )
 
+func handleConditionals(node dom.Element, data reflect.Value) error {
+	foundTrue, err := handleIfDirective(node, data)
+	if err != nil {
+		return err
+	}
+	next, ok := nextElement(node)
+	if !ok || !next.HasAttribute(ElseDirective) {
+		return nil
+	}
+	return handleElseDirective(next, foundTrue)
+}
+
 func handleIfDirective(node dom.Element, data reflect.Value) (bool, error) {
 	ifFieldName := strings.TrimSpace(node.Attribute(IfDirective))
 
@@ -16,43 +28,34 @@ func handleIfDirective(node dom.Element, data reflect.Value) (bool, error) {
 		return false, err
 	}
 
-	if ifResultIsTrue {
-		node.RemoveAttribute(IfResultDirective)
-		if node.HasAttribute(TemplateDirective) {
-			tmpl := node.Attribute(TemplateDirective)
-			node.RemoveAttribute(TemplateDirective)
-			node.SetInnerHTML(tmpl)
-		}
-		next := node.NextSibling()
-		if next != nil {
-			nextEl, ok := next.(dom.Element)
-			if ok && nextEl.HasAttribute(ElseDirective) {
-				if !nextEl.HasAttribute(TemplateDirective) {
-					nextEl.SetAttribute(TemplateDirective, nextEl.InnerHTML())
-				}
-				nextEl.ReplaceChildren()
-			}
-		}
-	} else {
-		if node.Attribute(IfResultDirective) != "false" {
-			if !node.HasAttribute(TemplateDirective) {
-				node.SetAttribute(TemplateDirective, node.InnerHTML())
-			}
-			node.SetAttribute(IfResultDirective, "false")
-			node.ReplaceChildren()
-		}
-		next := node.NextSibling()
-		if next != nil {
-			nextEl, ok := next.(dom.Element)
-			if ok && nextEl.HasAttribute(TemplateDirective) {
-				tmpl := nextEl.Attribute(TemplateDirective)
-				nextEl.RemoveAttribute(TemplateDirective)
-				nextEl.SetInnerHTML(tmpl)
-			}
-		}
+	switch {
+	case ifResultIsTrue && node.HasAttribute(HiddenDirective):
+		tmpl := node.Attribute(TemplateDirective)
+		node.RemoveAttribute(HiddenDirective)
+		node.RemoveAttribute(TemplateDirective)
+		node.SetInnerHTML(tmpl)
+	case !ifResultIsTrue && !node.HasAttribute(HiddenDirective):
+		node.SetAttribute(TemplateDirective, node.InnerHTML())
+		node.SetAttribute(HiddenDirective, "")
+		node.ReplaceChildren()
 	}
 
 	return ifResultIsTrue, nil
+}
+
+func handleElseDirective(node dom.Element, previousTrue bool) error {
+	switch {
+	case !previousTrue && node.HasAttribute(HiddenDirective):
+		tmpl := node.Attribute(TemplateDirective)
+		node.RemoveAttribute(HiddenDirective)
+		node.RemoveAttribute(TemplateDirective)
+		node.SetInnerHTML(tmpl)
+	case previousTrue && !node.HasAttribute(HiddenDirective):
+		node.SetAttribute(TemplateDirective, node.InnerHTML())
+		node.SetAttribute(HiddenDirective, "")
+		node.ReplaceChildren()
+	}
+	return nil
 }
 
 func resolveBooleanForIfDirective(ifExpStr string, data reflect.Value) (bool, error) {
@@ -74,4 +77,18 @@ func resolveBooleanForIfDirective(ifExpStr string, data reflect.Value) (bool, er
 		return false, errors.New("attr: boolean method only return a single boolean")
 	}
 	return method.Interface().(func() bool)(), nil
+}
+
+func nextElement(node dom.Element) (dom.Element, bool) {
+	for {
+		next := node.NextSibling()
+		if next == nil {
+			return nil, false
+		}
+		el, ok := next.(dom.Element)
+		if !ok {
+			continue
+		}
+		return el, true
+	}
 }
