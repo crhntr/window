@@ -137,7 +137,7 @@ func (val v) closest(selector string) dom.Element {
 	return Element(js.Value(val).Call("closest", selector))
 }
 func (val v) matches(selector string) bool {
-	return js.Value(val).Call("setAttribute", selector).Bool()
+	return js.Value(val).Call("matches", selector).Bool()
 }
 
 func (val v) setInnerHTML(s string) { js.Value(val).Set("innerHTML", s) }
