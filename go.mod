@@ -1,6 +1,6 @@
 module github.com/crhntr/window
 
-go 1.17
+go 1.19
 
 require github.com/crhntr/please v0.0.0-20211221202609-aa7413949fc9
 

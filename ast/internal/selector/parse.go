@@ -7,7 +7,7 @@ import (
 
 	"golang.org/x/net/html"
 
-	"github.com/crhntr/window/ast/selector/scanner"
+	"github.com/crhntr/window/ast/internal/selector/scanner"
 )
 
 func Parse(s string) (Matcher, error) {
