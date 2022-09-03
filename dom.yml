@@ -1,0 +1,670 @@
+---
+name: Event
+kind: interface
+spec:
+  properties:
+    - name: bubbles
+      type: bool
+    - name: cancelable
+      type: bool
+    - name: composed
+      type: bool
+    - name: currentTarget
+      type: js.Value
+    - name: defaultPrevented
+      type: bool
+    - name: eventPhase
+      type: EventPhase
+    - name: isTrusted
+      type: bool
+    - name: target
+      type: js.Value
+    - name: timeStamp
+      type: time.Time
+      wrap: millisecondsSinceEpocToTime
+    - name: type
+      type: string
+  methods:
+    - name: preventDefault
+    - name: stopImmediatePropagation
+    - name: stopPropagation
+---
+name: Node
+kind: interface
+spec:
+  properties:
+    - name: baseURI
+      type: string
+    - name: childNodes
+      type: NodeList
+    - name: firstChild
+      type: Node
+    - name: isConnected
+      type: bool
+    - name: lastChild
+      type: Node
+    - name: nextSibling
+      type: Node
+    - name: nodeName
+      type: string
+    - name: nodeType
+      type: NodeType
+    - name: nodeValue
+      type: Node
+      isSettable: true
+    - name: parentNode
+      type: Node
+    - name: parentElement
+      type: Element
+    - name: previousSibling
+      type: Node
+    - name: textContent
+      type: string
+      isSettable: true
+  methods:
+    - name: appendChild
+      params:
+        - name: aChild
+          type: Node
+      result:
+        type: Node
+    - name: cloneNode
+      params:
+        - name: deep
+          type: bool
+      result:
+        type: Node
+    - name: compareDocumentPosition
+      params:
+        - name: otherNode
+          type: Node
+      result:
+        type: DocumentPosition
+    - name: contains
+      params:
+        - name: node
+          type: Node
+      result:
+        type: bool
+    - name: getRootNode
+      params:
+        - name: options
+          type: GetRootNodeOptions
+      result:
+        type: Node
+    - name: hasChildNodes
+      result:
+        type: bool
+    - name: insertBefore
+      params:
+        - name: newNode
+          type: Node
+        - name: referenceNode
+          type: Node
+      result:
+        type: bool
+    - name: isDefaultNamespace
+      params:
+        - name: namespaceURL
+          type: string
+      result:
+        type: bool
+    - name: isEqualNode
+      params:
+        - name: otherNode
+          type: Node
+      result:
+        type: bool
+    - name: isOtherNode
+      params:
+        - name: otherNode
+          type: Node
+      result:
+        type: bool
+    - name: lookupPrefix
+      params:
+        - name: prefix
+          type: string
+      result:
+        type: string
+    - name: lookupNamespaceURI
+      params:
+        - name: prefix
+          type: string
+      result:
+        type: string
+    - name: normalize
+    - name: removeChild
+      params:
+        - name: child
+          type: Node
+    - name: replaceChild
+      params:
+        - name: newChild
+          type: Node
+        - name: oldChild
+          type: Node
+---
+name: Element
+parent: Node
+kind: interface
+spec:
+  properties:
+#    - name: assignedSlot
+#      type: HTMLSlotElement
+#    - name: attributes
+#      type: NamedNodeMap
+    - name: childElementCount
+      type: int
+    - name: children
+      type: HTMLCollection
+    - name: classList
+      type: DOMTokenList
+    - name: className
+      type: string
+    - name: clientHeight
+      type: int
+    - name: clientLeft
+      type: int
+    - name: clientTop
+      type: int
+    - name: clientWidth
+      type: int
+    - name: firstElementChild
+      type: Element
+    - name: id
+      name_override: ID
+      type: string
+    - name: innerHTML
+      type: string
+    - name: localName
+      type: string
+    - name: namespaceURI
+      type: string
+    - name: nextElementSibling
+      type: Element
+    - name: outerHTML
+      type: string
+    - name: part
+      type: DOMTokenList
+    - name: prefix
+      type: string
+    - name: previousElementSibling
+      type: Element
+    - name: scrollHeight
+      type: int
+    - name: scrollLeft
+      type: int
+    - name: scrollTop
+      type: int
+    - name: scrollWidth
+      type: int
+#    - name: shadowRoot
+#      type: ShadowRoot
+    - name: slot
+      type: string
+    - name: tagName
+      type: string
+  methods:
+    - name: addEventListener
+      params:
+        - name: eventType
+          type: string
+        - name: listener
+          type: func(event Event)
+        - name: options
+          type: AddEventListenerOptions
+        - name: useCapture
+          type: bool
+    - name: after
+      params:
+        - name: node
+          type: Node
+          isVariadic: true
+#    - name: attachShadow
+#      params:
+#        - name: options
+#          type: AttachShadowOptions
+#      result:
+#        type: ShadowRoot
+    # - name: animate
+    - name: append
+      params:
+        - name: params
+          type: Node
+          isVariadic: true
+    - name: before
+      params:
+        - name: params
+          type: Node
+          isVariadic: true
+    - name: closest
+      params:
+        - name: selector
+          type: string
+      result:
+        type: Element
+    - name: dispatchEvent
+      params:
+        - name: event
+          type: Event
+      result:
+        type: bool
+    - name: getAttribute
+#     name_override: Attribute
+      params:
+        - name: name
+          type: string
+      result:
+        type: string
+    - name: getAttributeNames
+      result:
+        type: string
+        isArray: true
+#   - name: getAttributeNode
+#   - name: getAttributeNodeNS
+#   - name: getAttributeNS
+    - name: getBoundingClientRect
+      result:
+        type: DOMRect
+#   - name: getClientRects
+    - name: getElementsByClassName
+      params:
+        - name: names
+          type: string
+      result:
+        type: HTMLCollection
+    - name: getElementsByTagName
+      params:
+        - name: tagName
+          type: string
+      result:
+        type: HTMLCollection
+    - name: getElementsByTagNameNS
+      params:
+        - name: namespaceURI
+          type: string
+        - name: localName
+          type: string
+      result:
+        type: HTMLCollection
+    - name: hasAttribute
+      params:
+        - name: name
+          type: string
+      result:
+        type: bool
+    - name: hasAttributeNS
+      params:
+        - name: namespaceURI
+          type: string
+        - name: localName
+          type: string
+      result:
+        type: bool
+    - name: hasAttributes
+      result:
+        type: bool
+    - name: hasPointerCapture
+      params:
+        - name: pointerId
+          type: int
+      result:
+        type: bool
+    - name: insertAdjacentElement
+      params:
+        - name: position
+          type: AdjacentPosition
+        - name: element
+          type: Element
+      result:
+        type: Element
+    - name: insertAdjacentHTML
+      params:
+        - name: position
+          type: AdjacentPosition
+        - name: text
+          type: string
+    - name: insertAdjacentText
+      params:
+        - name: position
+          type: AdjacentPosition
+        - name: text
+          type: string
+    - name: matches
+      params:
+        - name: selectors
+          type: string
+      result:
+        type: HTMLCollection
+    - name: prepend
+      params:
+        - name: params
+          type: Node
+          isVariadic: true
+    - name: querySelector
+      params:
+        - name: selectors
+          type: string
+          isVariadic: true
+      result:
+        type: Element
+    - name: querySelectorAll
+      params:
+        - name: selectors
+          type: string
+          isVariadic: true
+      result:
+        type: NodeList
+    - name: releasePointerCapture
+      params:
+        - name: pointerId
+          type: int
+    - name: remove
+    - name: removeAttribute
+      params:
+        - name: attrName
+          type: string
+#   - name: removeAttributeNode
+    - name: removeAttributeNS
+      params:
+        - name: namespaceURI
+          type: string
+        - name: localName
+          type: string
+    - name: removeEventListener
+      params:
+        - name: eventType
+          type: string
+        - name: listener
+          type: func(event Event)
+        - name: options
+          type: AddEventListenerOptions
+        - name: useCapture
+          type: bool
+    - name: replaceChildren
+      params:
+        - name: node
+          type: Node
+          isVariadic: true
+    - name: replaceWith
+      params:
+        - name: node
+          type: Node
+          isVariadic: true
+#   - name: requestFullscreen
+#   - name: requestPointerLock
+    - name: scroll
+      params:
+        - name: options
+          type: ScrollOptions
+    - name: scrollBy
+      params:
+        - name: options
+          type: ScrollOptions
+    - name: scrollIntoView
+      params:
+        - name: options
+          type: ScrollIntoViewOptions
+    - name: scrollTo
+      params:
+        - name: options
+          type: ScrollOptions
+    - name: setAttribute
+      params:
+        - name: name
+          type: string
+        - name: value
+          type: string
+#   - name: setAttributeNode
+#   - name: setAttributeNodeNS
+    - name: setAttributeNS
+      params:
+        - name: namespace
+          type: string
+        - name: name
+          type: string
+        - name: value
+          type: string
+#   - name: setHTML
+    - name: setPointerCapture
+      params:
+        - name: pointerId
+          type: int
+    - name: toggleAttribute
+      params:
+        - name: name
+          type: string
+---
+name: DOMRect
+kind: class
+spec:
+  properties:
+    - name: x
+      type: int
+    - name: y
+      type: int
+    - name: width
+      type: int
+    - name: height
+      type: int
+    - name: top
+      type: int
+    - name: right
+      type: int
+    - name: bottom
+      type: int
+    - name: left
+      type: int
+#---
+#name: DocumentFragment
+
+---
+name: NodeList
+kind: class
+spec:
+  properties:
+    - name: length
+      type: int
+  methods:
+  - name: item
+    params:
+      - name: index
+        type: int
+    result:
+      type: Node
+---
+name: HTMLCollection
+kind: class
+spec:
+  properties:
+    - name: length
+      type: int
+  methods:
+  - name: item
+    params:
+      - name: index
+        type: int
+    result:
+      type: Node
+  - name: namedItem
+    params:
+      - name: name
+        type: string
+    result:
+      type: Node
+---
+name: DOMTokenList
+kind: class
+spec:
+  properties:
+    - name: length
+      type: int
+    - name: value
+      type: string
+  methods:
+    - name: item
+      params:
+        - name: index
+          type: int
+      result:
+        type: string
+    - name: contains
+      params:
+        - name: token
+          type: string
+      result:
+        type: bool
+    - name: add
+      params:
+        - name: token
+          type: string
+          isVariadic: true
+    - name: remove
+      params:
+        - name: token
+          type: string
+          isVariadic: true
+    - name: replace
+      params:
+        - name: oldToken
+          type: string
+        - name: newToken
+          type: string
+    - name: supports
+      params:
+        - name: token
+          type: string
+      result:
+        type: bool
+    - name: toggle
+      params:
+        - name: token
+          type: string
+      result:
+        type: bool
+    - name: toggle
+      name_override: ToggleForce
+      params:
+        - name: token
+          type: string
+        - name: force
+          type: bool
+      result:
+        type: bool
+---
+name: HTMLElement
+kind: class
+parent: Element
+spec:
+  properties:
+    - name: accessKey
+      type: string
+    - name: accessKeyLabel
+      type: string
+    - name: isContentEditable
+      type: bool
+    - name: dataset
+      type: DOMStringMap
+    - name: dir
+      type: string
+    - name: draggable
+      type: bool
+    - name: enterKeyHint
+      type: string
+    - name: hidden
+      type: bool
+      isSettable: true
+    - name: innerText
+      type: string
+      isSettable: true
+    - name: lang
+      type: string
+      isSettable: true
+    - name: offsetHeight
+      type: float64
+    - name: offsetLeft
+      type: float64
+    - name: offsetParent
+      type: float64
+    - name: offsetTop
+      type: float64
+    - name: offsetWidth
+      type: float64
+    - name: outerText
+      type: string
+      isSettable: true
+    - name: style
+      type: CSSStyleDeclaration
+    - name: tabIndex
+      type: int
+      isSettable: true
+    - name: title
+      type: string
+      isSettable: true
+  methods:
+    - name: blur
+    - name: click
+    - name: focus
+    - name: focus
+      name_override: focusWithOptions
+      params:
+        - name: options
+          type: FocusOptions
+---
+name: CSSStyleDeclaration
+kind: class
+spec:
+  properties:
+    - name: cssText
+      type: string
+      isSettable: true
+    - name: length
+      type: int
+    # - name: parentRule
+  methods:
+    - name: getPropertyPriority
+      params:
+        - name: property
+          type: string
+      result:
+        type: string
+    - name: getPropertyValue
+      params:
+        - name: property
+          type: string
+      result:
+        type: string
+    - name: item
+      params:
+        - name: index
+          type: int
+      result:
+        type: string
+    - name: removeProperty
+      params:
+        - name: property
+          type: string
+    - name: setProperty
+      params:
+        - name: property
+          type: string
+        - name: value
+          type: string
+    - name: setProperty
+      name_override: setPropertyWithPriority
+      params:
+        - name: property
+          type: string
+        - name: value
+          type: string
+        - name: priority
+          type: string
+---
+name: DocumentFragment
+kind: class
+parent: Node
+---
+name: SVGElement
+kind: class
+parent: Element
