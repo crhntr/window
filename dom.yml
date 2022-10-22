@@ -1,6 +1,6 @@
 ---
 name: Event
-kind: interface
+kind: class
 spec:
   properties:
     - name: bubbles
@@ -29,6 +29,172 @@ spec:
     - name: stopImmediatePropagation
     - name: stopPropagation
 ---
+name: GenericEvent
+parent: Event
+kind: class
+---
+name: UIEvent
+parent: Event
+kind: class
+spec:
+  properties:
+    - name: view
+      type: js.Value
+    - name: detail
+      type: int
+---
+name: MouseEvent
+parent: UIEvent
+kind: class
+spec:
+  properties:
+    - name: altKey
+      type: bool
+    - name: button
+      type: int
+    - name: buttons
+      type: int
+    - name: clientX
+      type: float64
+    - name: clientY
+      type: float64
+    - name: ctrlKey
+      type: bool
+    - name: metaKey
+      type: bool
+    - name: movementX
+      type: int
+    - name: movementY
+      type: int
+    - name: offsetX
+      type: float64
+    - name: offsetY
+      type: float64
+    - name: pageX
+      type: float64
+    - name: pageY
+      type: float64
+    - name: relatedTarget
+      type: js.Value
+    - name: pageX
+      type: screen64
+    - name: pageY
+      type: screen64
+    - name: shiftKey
+      type: bool
+    - name: x
+      type: float64
+    - name: y
+      type: float64
+  methods:
+    - name: getModifierState
+      params:
+        - name: key
+          type: int
+      result:
+        type: bool
+---
+name: FocusEvent
+parent: UIEvent
+kind: class
+spec:
+  properties:
+    - name: relatedTarget
+      type: js.Value
+---
+name: InputEvent
+parent: UIEvent
+kind: class
+spec:
+  properties:
+    - name: data
+      type: string
+    - name: dataTransfer
+      type: string
+    - name: inputType
+      type: string
+    - name: isComposing
+      type: bool
+  methods:
+    - name: getTargetRanges
+      result:
+        type: "[]StaticRange"
+        wrap: makeStaticRangeSlice
+---
+name: MessageEvent
+parent: Event
+kind: class
+spec:
+  properties:
+    - name: data
+      type: js.Value
+    - name: origin
+      type: string
+    - name: lastEventId
+      name_override: lastEventID
+      type: string
+---
+name: AbstractRange
+kind: interface
+spec:
+  properties:
+    - name: collapsed
+      type: bool
+    - name: endContainer
+      type: Node
+    - name: endOffset
+      type: int
+    - name: startContainer
+      type: Node
+    - name: startOffset
+      type: int
+---
+name: StaticRange
+kind: class
+parent: AbstractRange
+#---
+#name: Range
+#kind: class
+#parent: AbstractRange
+#spec:
+#  properties:
+#    - name: commonAncestorContainer
+#      type: Node
+#  methods:
+#    - name: collapse
+#      params:
+#        - name: toStart
+#          type: bool
+#    - name:
+---
+name: SecurityPolicyViolationEvent
+parent: Event
+kind: class
+spec:
+  properties:
+    - name: blockedURI
+      type: string
+    - name: columnNumber
+      type: int
+    - name: disposition
+      type: string
+    - name: documentURI
+      type: string
+    - name: effectiveDirective
+      type: string
+    - name: lineNumber
+      type: int
+    - name: originalPolicy
+      type: string
+    - name: referrer
+      type: string
+    - name: sourceFile
+      type: string
+    - name: statusCode
+      type: int
+    - name: violatedDirective
+      type: string
+---
 name: Node
 kind: interface
 spec:
@@ -51,7 +217,6 @@ spec:
       type: NodeType
     - name: nodeValue
       type: Node
-      isSettable: true
     - name: parentNode
       type: Node
     - name: parentElement
@@ -66,6 +231,7 @@ spec:
       params:
         - name: aChild
           type: Node
+          wrap: convertNodeToValue
       result:
         type: Node
     - name: cloneNode
@@ -78,18 +244,21 @@ spec:
       params:
         - name: otherNode
           type: Node
+          wrap: convertNodeToValue
       result:
         type: DocumentPosition
     - name: contains
       params:
         - name: node
           type: Node
+          wrap: convertNodeToValue
       result:
         type: bool
     - name: getRootNode
       params:
         - name: options
           type: GetRootNodeOptions
+          wrap: wrapOptions
       result:
         type: Node
     - name: hasChildNodes
@@ -99,10 +268,12 @@ spec:
       params:
         - name: newNode
           type: Node
+          wrap: convertNodeToValue
         - name: referenceNode
           type: Node
+          wrap: convertNodeToValue
       result:
-        type: bool
+        type: Element
     - name: isDefaultNamespace
       params:
         - name: namespaceURL
@@ -113,12 +284,14 @@ spec:
       params:
         - name: otherNode
           type: Node
+          wrap: convertNodeToValue
       result:
         type: bool
     - name: isOtherNode
       params:
         - name: otherNode
           type: Node
+          wrap: convertNodeToValue
       result:
         type: bool
     - name: lookupPrefix
@@ -138,6 +311,7 @@ spec:
       params:
         - name: child
           type: Node
+          wrap: convertNodeToValue
     - name: replaceChild
       params:
         - name: newChild
@@ -177,6 +351,7 @@ spec:
       type: string
     - name: innerHTML
       type: string
+      isSettable: true
     - name: localName
       type: string
     - name: namespaceURI
@@ -206,14 +381,16 @@ spec:
     - name: tagName
       type: string
   methods:
-    - name: addEventListener
+    - &addEventListener
+      name: addEventListener
       params:
         - name: eventType
           type: string
         - name: listener
-          type: func(event Event)
+          type: js.Func
         - name: options
           type: AddEventListenerOptions
+          wrap: wrapOptions
         - name: useCapture
           type: bool
     - name: after
@@ -221,10 +398,12 @@ spec:
         - name: node
           type: Node
           isVariadic: true
+          wrap: nodesToValues
 #    - name: attachShadow
 #      params:
 #        - name: options
 #          type: AttachShadowOptions
+#          wrap: wrapOptions
 #      result:
 #        type: ShadowRoot
     # - name: animate
@@ -233,11 +412,13 @@ spec:
         - name: params
           type: Node
           isVariadic: true
+          wrap: nodesToValues
     - name: before
       params:
         - name: params
           type: Node
           isVariadic: true
+          wrap: nodesToValues
     - name: closest
       params:
         - name: selector
@@ -274,6 +455,14 @@ spec:
           type: string
       result:
         type: HTMLCollection
+    - &getElementById
+      name: getElementById
+      name_override: getElementByID
+      params:
+        - name: id
+          type: string
+      result:
+        type: Element
     - name: getElementsByTagName
       params:
         - name: tagName
@@ -308,6 +497,7 @@ spec:
     - name: hasPointerCapture
       params:
         - name: pointerId
+          name_override: pointerID
           type: int
       result:
         type: bool
@@ -315,6 +505,7 @@ spec:
       params:
         - name: position
           type: AdjacentPosition
+          wrap: string
         - name: element
           type: Element
       result:
@@ -323,12 +514,14 @@ spec:
       params:
         - name: position
           type: AdjacentPosition
+          wrap: string
         - name: text
           type: string
     - name: insertAdjacentText
       params:
         - name: position
           type: AdjacentPosition
+          wrap: string
         - name: text
           type: string
     - name: matches
@@ -337,28 +530,31 @@ spec:
           type: string
       result:
         type: HTMLCollection
-    - name: prepend
+    - &prepend
+      name: prepend
       params:
-        - name: params
+        - name: nodes
           type: Node
           isVariadic: true
-    - name: querySelector
+          wrap: nodesToValues
+    - &querySelector
+      name: querySelector
       params:
         - name: selectors
           type: string
-          isVariadic: true
       result:
         type: Element
-    - name: querySelectorAll
+    - &querySelectorAll
+      name: querySelectorAll
       params:
         - name: selectors
           type: string
-          isVariadic: true
       result:
         type: NodeList
     - name: releasePointerCapture
       params:
         - name: pointerId
+          name_override: pointerID
           type: int
     - name: remove
     - name: removeAttribute
@@ -380,6 +576,7 @@ spec:
           type: func(event Event)
         - name: options
           type: AddEventListenerOptions
+          wrap: wrapOptions
         - name: useCapture
           type: bool
     - name: replaceChildren
@@ -387,29 +584,35 @@ spec:
         - name: node
           type: Node
           isVariadic: true
+          wrap: nodesToValues
     - name: replaceWith
       params:
         - name: node
           type: Node
           isVariadic: true
+          wrap: nodesToValues
 #   - name: requestFullscreen
 #   - name: requestPointerLock
     - name: scroll
       params:
         - name: options
           type: ScrollOptions
+          wrap: wrapOptions
     - name: scrollBy
       params:
         - name: options
           type: ScrollOptions
+          wrap: wrapOptions
     - name: scrollIntoView
       params:
         - name: options
           type: ScrollIntoViewOptions
+          wrap: wrapOptions
     - name: scrollTo
       params:
         - name: options
           type: ScrollOptions
+          wrap: wrapOptions
     - name: setAttribute
       params:
         - name: name
@@ -430,11 +633,28 @@ spec:
     - name: setPointerCapture
       params:
         - name: pointerId
+          name_override: pointerID
           type: int
     - name: toggleAttribute
       params:
         - name: name
           type: string
+---
+name: HTMLIFrameElement
+kind: class
+parent: HTMLElement
+spec:
+  parameters:
+    - name: contentDocument
+      type: Document
+    #- name: contentWindow
+    #   type: Window
+    - name: csp
+      type: string
+    - name: fetchPriority
+      type: string
+    - name: src
+      type: string
 ---
 name: DOMRect
 kind: class
@@ -456,9 +676,6 @@ spec:
       type: int
     - name: left
       type: int
-#---
-#name: DocumentFragment
-
 ---
 name: NodeList
 kind: class
@@ -520,11 +737,13 @@ spec:
         - name: token
           type: string
           isVariadic: true
+          wrap: stringsToAny
     - name: remove
       params:
         - name: token
           type: string
           isVariadic: true
+          wrap: stringsToAny
     - name: replace
       params:
         - name: oldToken
@@ -611,12 +830,14 @@ spec:
       params:
         - name: options
           type: FocusOptions
+          wrap: wrapOptions
 ---
 name: CSSStyleDeclaration
 kind: class
 spec:
   properties:
     - name: cssText
+      name_override: CSSText
       type: string
       isSettable: true
     - name: length
@@ -668,3 +889,218 @@ parent: Node
 name: SVGElement
 kind: class
 parent: Element
+---
+name: Document
+kind: class
+parent: Node
+spec:
+  properties:
+    - name: activeElement
+      type: Element
+    - name: body
+      type: Element
+    - name: characterSet
+      type: string
+    - name: childElementCount
+      type: int
+    - name: children
+      type: HTMLCollection
+    - name: contentType
+      type: string
+    - name: currentScript
+      type: Element
+    - name: doctype
+      name_override: DocType
+      type: string
+    - name: documentElement
+      type: Element
+    - name: documentURI
+      type: string
+    - name: forms
+      type: HTMLCollection
+    - name: head
+      type: Element
+    - name: hidden
+      type: bool
+    - name: images
+      type: HTMLCollection
+    - name: links
+      type: HTMLCollection
+    - name: scripts
+      type: HTMLCollection
+    - name: styleSheets
+      type: HTMLCollection
+    - name: cookie
+      type: string
+    - name: dir
+      type: string
+      isSettable: true
+    - name: domain
+      type: string
+      isSettable: true
+    - name: location
+      type: string
+    - name: readyState
+      type: string
+    - name: referrer
+      type: string
+    - name: title
+      type: string
+      isSettable: true
+    - name: URL
+      type: string
+  methods:
+    - &append
+      name: append
+      params:
+        - name: params
+          type: Node
+          isVariadic: true
+          wrap: nodesToValues
+    - name: adoptNode
+      params:
+        - name: externalNode
+          type: Node
+          wrap: convertNodeToValue
+    - *append
+    - name: createElement
+      params:
+        - name: tagName
+          type: string
+      result:
+        type: Element
+    - name: createElement
+      name_override: createElementWithOptions
+      params:
+        - name: tagName
+          type: string
+        - name: options
+          type: CreateElementOptions
+          wrap: wrapOptions
+      result:
+        type: Element
+    - name: createElementNS
+      params:
+        - name: namespaceURI
+          type: string
+        - name: qualifiedName
+          type: string
+        - name: options
+          type: CreateElementOptions
+          wrap: wrapOptions
+      result:
+        type: Element
+    - name: createTextNode
+      params:
+        - name: text
+          type: string
+      result:
+        type: Text
+    - *getElementById
+    - name: getElementsByClassName
+      params:
+        - name: id
+          type: string
+      result:
+        type: HTMLCollection
+    - name: getElementsByClassName
+      params:
+        - name: id
+          type: string
+      result:
+        type: HTMLCollection
+    - *append
+    - *prepend
+    - *querySelector
+    - *querySelectorAll
+---
+name: Window
+kind: class
+spec:
+  properties:
+    - name: document
+      type: Document
+    - name: frameElement
+      type: Element
+    - name: innerHeight
+      type: int
+    - name: innerWidth
+      type: int
+    - name: isSecureContext
+      type: bool
+    - name: name
+      type: string
+    - name: parent
+      type: Window
+  methods:
+    - name: alert
+      params:
+        - name: message
+          type: string
+    - name: blur
+    - name: close
+    - name: confirm
+      params:
+        - name: message
+          type: string
+      result:
+        type: bool
+    - name: focus
+    - name: getComputedStyle
+      params:
+        - name: el
+          type: Element
+    - name: getComputedStyle
+      params:
+        - name: el
+          type: Element
+    - name: open
+      params:
+        - name: url
+          type: string
+        - name: target
+          type: string
+        - name: windowFeatures
+          type: string
+    - name: postMessage
+      params:
+        - name: message
+          type: any
+        - name: postMessage
+          type: string
+    - name: prompt
+      params:
+        - name: message
+          type: string
+        - name: defaultValue
+          type: string
+      result:
+        type: string
+    - *addEventListener
+---
+name: CharacterData
+kind: interface
+parent: Node
+spec:
+  properties:
+    - name: data
+      type: string
+    - name: length
+      type: int
+    - name: nextElementSibling
+      type: Element
+    - name: previousElementSibling
+      type: Element
+  methods:
+    # TODO: https://developer.mozilla.org/en-US/docs/Web/API/CharacterData
+---
+name: Text
+kind: class
+parent: CharacterData
+spec:
+  properties:
+    - name: wholeText
+      type: string
+    - name: assignedSlot
+      # type: HTMLSlotElement
+      type: Element
