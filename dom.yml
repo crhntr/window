@@ -784,7 +784,7 @@ spec:
     - name: isContentEditable
       type: bool
     - name: dataset
-      type: DOMStringMap
+      type: StringMap
     - name: dir
       type: string
     - name: draggable

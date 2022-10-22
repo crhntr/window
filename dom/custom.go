@@ -1,8 +1,6 @@
 package dom
 
 import (
-	"fmt"
-	"reflect"
 	"syscall/js"
 	"time"
 )
@@ -168,20 +166,21 @@ func (options FocusOptions) SetFocusVisible(value bool) FocusOptions {
 	return options
 }
 
-type DOMStringMap js.Value
+// StringMap is a DOMStringMap
+type StringMap js.Value
 
-func wrapDOMStringMap(value js.Value) DOMStringMap { return DOMStringMap(value) }
+func wrapDOMStringMap(value js.Value) StringMap { return StringMap(value) }
 
-func (m DOMStringMap) Get(name string) string { return js.Value(m).Get(name).String() }
-func (m DOMStringMap) Set(name, value string) { js.Value(m).Set(name, value) }
-func (m DOMStringMap) Delete(name string)     { js.Value(m).Delete(name) }
+func (m StringMap) Get(name string) string { return js.Value(m).Get(name).String() }
+func (m StringMap) Set(name, value string) { js.Value(m).Set(name, value) }
+func (m StringMap) Delete(name string)     { js.Value(m).Delete(name) }
 
 // Node implementations
 var (
-	textNodePrototype         = js.Global().Get(reflect.TypeOf(Text{}).Name())
-	htmlElementPrototype      = js.Global().Get(reflect.TypeOf(HTMLElement{}).Name())
-	svgElementPrototype       = js.Global().Get(reflect.TypeOf(SVGElement{}).Name())
-	documentFragmentPrototype = js.Global().Get(reflect.TypeOf(DocumentFragment{}).Name())
+	textNodePrototype         = js.Global().Get("Text")
+	htmlElementPrototype      = js.Global().Get("HTMLElement")
+	svgElementPrototype       = js.Global().Get("SVGElement")
+	documentFragmentPrototype = js.Global().Get("DocumentFragment")
 )
 
 func wrapNode(value js.Value) Node {
@@ -195,7 +194,7 @@ func wrapNode(value js.Value) Node {
 	case value.InstanceOf(documentFragmentPrototype):
 		return wrapDocumentFragment(value)
 	default:
-		message := fmt.Sprintf("failed to wrap Node %s", js.Global().Get("Object").Call("getPrototypeOf", value))
+		message := "failed to wrap Node " + js.Global().Get("Object").Call("getPrototypeOf", value).String()
 		js.Global().Get("console").Call("log", value)
 		panic(message)
 		return nil
@@ -229,17 +228,26 @@ func GetValue(el Element) string {
 	switch e := el.(type) {
 	case HTMLElement:
 		return js.Value(e).Get("value").String()
+	case SVGElement:
+		return js.Value(e).Get("value").String()
+	case HTMLIFrameElement:
+		return js.Value(e).Get("value").String()
+	default:
+		panic("not an Element")
 	}
-	panic(fmt.Sprintf("not an Element: %T", el))
 }
 
 func SetValue(el Element, value string) {
 	switch e := el.(type) {
 	case HTMLElement:
 		js.Value(e).Set("value", value)
-		return
+	case SVGElement:
+		js.Value(e).Set("value", value)
+	case HTMLIFrameElement:
+		js.Value(e).Set("value", value)
+	default:
+		panic("not an Element")
 	}
-	panic(fmt.Sprintf("not an Element: %T", el))
 }
 
 //// Event implementations
