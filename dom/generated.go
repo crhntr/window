@@ -40,13 +40,13 @@ func (val Event) TimeStamp() time.Time {
 func (val Event) Type() string {
 	return js.Value(val).Get("type").String()
 }
-func (val Event) PreventDefault()  {
+func (val Event) PreventDefault() {
 	js.Value(val).Call("preventDefault")
 }
-func (val Event) StopImmediatePropagation()  {
+func (val Event) StopImmediatePropagation() {
 	js.Value(val).Call("stopImmediatePropagation")
 }
-func (val Event) StopPropagation()  {
+func (val Event) StopPropagation() {
 	js.Value(val).Call("stopPropagation")
 }
 
@@ -85,13 +85,13 @@ func (val GenericEvent) TimeStamp() time.Time {
 func (val GenericEvent) Type() string {
 	return js.Value(val).Get("type").String()
 }
-func (val GenericEvent) PreventDefault()  {
+func (val GenericEvent) PreventDefault() {
 	js.Value(val).Call("preventDefault")
 }
-func (val GenericEvent) StopImmediatePropagation()  {
+func (val GenericEvent) StopImmediatePropagation() {
 	js.Value(val).Call("stopImmediatePropagation")
 }
-func (val GenericEvent) StopPropagation()  {
+func (val GenericEvent) StopPropagation() {
 	js.Value(val).Call("stopPropagation")
 }
 
@@ -136,13 +136,13 @@ func (val UIEvent) View() js.Value {
 func (val UIEvent) Detail() int {
 	return js.Value(val).Get("detail").Int()
 }
-func (val UIEvent) PreventDefault()  {
+func (val UIEvent) PreventDefault() {
 	js.Value(val).Call("preventDefault")
 }
-func (val UIEvent) StopImmediatePropagation()  {
+func (val UIEvent) StopImmediatePropagation() {
 	js.Value(val).Call("stopImmediatePropagation")
 }
-func (val UIEvent) StopPropagation()  {
+func (val UIEvent) StopPropagation() {
 	js.Value(val).Call("stopPropagation")
 }
 
@@ -238,13 +238,13 @@ func (val MouseEvent) X() float64 {
 func (val MouseEvent) Y() float64 {
 	return js.Value(val).Get("y").Float()
 }
-func (val MouseEvent) PreventDefault()  {
+func (val MouseEvent) PreventDefault() {
 	js.Value(val).Call("preventDefault")
 }
-func (val MouseEvent) StopImmediatePropagation()  {
+func (val MouseEvent) StopImmediatePropagation() {
 	js.Value(val).Call("stopImmediatePropagation")
 }
-func (val MouseEvent) StopPropagation()  {
+func (val MouseEvent) StopPropagation() {
 	js.Value(val).Call("stopPropagation")
 }
 func (val MouseEvent) GetModifierState(key int) bool {
@@ -295,13 +295,13 @@ func (val FocusEvent) Detail() int {
 func (val FocusEvent) RelatedTarget() js.Value {
 	return js.Value(val).Get("relatedTarget")
 }
-func (val FocusEvent) PreventDefault()  {
+func (val FocusEvent) PreventDefault() {
 	js.Value(val).Call("preventDefault")
 }
-func (val FocusEvent) StopImmediatePropagation()  {
+func (val FocusEvent) StopImmediatePropagation() {
 	js.Value(val).Call("stopImmediatePropagation")
 }
-func (val FocusEvent) StopPropagation()  {
+func (val FocusEvent) StopPropagation() {
 	js.Value(val).Call("stopPropagation")
 }
 
@@ -358,13 +358,13 @@ func (val InputEvent) InputType() string {
 func (val InputEvent) IsComposing() bool {
 	return js.Value(val).Get("isComposing").Bool()
 }
-func (val InputEvent) PreventDefault()  {
+func (val InputEvent) PreventDefault() {
 	js.Value(val).Call("preventDefault")
 }
-func (val InputEvent) StopImmediatePropagation()  {
+func (val InputEvent) StopImmediatePropagation() {
 	js.Value(val).Call("stopImmediatePropagation")
 }
-func (val InputEvent) StopPropagation()  {
+func (val InputEvent) StopPropagation() {
 	js.Value(val).Call("stopPropagation")
 }
 func (val InputEvent) GetTargetRanges() []StaticRange {
@@ -415,13 +415,13 @@ func (val MessageEvent) Origin() string {
 func (val MessageEvent) LastEventID() string {
 	return js.Value(val).Get("lastEventId").String()
 }
-func (val MessageEvent) PreventDefault()  {
+func (val MessageEvent) PreventDefault() {
 	js.Value(val).Call("preventDefault")
 }
-func (val MessageEvent) StopImmediatePropagation()  {
+func (val MessageEvent) StopImmediatePropagation() {
 	js.Value(val).Call("stopImmediatePropagation")
 }
-func (val MessageEvent) StopPropagation()  {
+func (val MessageEvent) StopPropagation() {
 	js.Value(val).Call("stopPropagation")
 }
 
@@ -521,13 +521,13 @@ func (val SecurityPolicyViolationEvent) StatusCode() int {
 func (val SecurityPolicyViolationEvent) ViolatedDirective() string {
 	return js.Value(val).Get("violatedDirective").String()
 }
-func (val SecurityPolicyViolationEvent) PreventDefault()  {
+func (val SecurityPolicyViolationEvent) PreventDefault() {
 	js.Value(val).Call("preventDefault")
 }
-func (val SecurityPolicyViolationEvent) StopImmediatePropagation()  {
+func (val SecurityPolicyViolationEvent) StopImmediatePropagation() {
 	js.Value(val).Call("stopImmediatePropagation")
 }
-func (val SecurityPolicyViolationEvent) StopPropagation()  {
+func (val SecurityPolicyViolationEvent) StopPropagation() {
 	js.Value(val).Call("stopPropagation")
 }
 
@@ -788,7 +788,7 @@ func (val HTMLIFrameElement) AccessKeyLabel() string {
 func (val HTMLIFrameElement) IsContentEditable() bool {
 	return js.Value(val).Get("isContentEditable").Bool()
 }
-func (val HTMLIFrameElement) Dataset() DOMStringMap {
+func (val HTMLIFrameElement) Dataset() StringMap {
 	return wrapDOMStringMap(js.Value(val).Get("dataset"))
 }
 func (val HTMLIFrameElement) Dir() string {
@@ -890,25 +890,25 @@ func (val HTMLIFrameElement) LookupPrefix(prefix string) string {
 func (val HTMLIFrameElement) LookupNamespaceURI(prefix string) string {
 	return js.Value(val).Call("lookupNamespaceURI", prefix).String()
 }
-func (val HTMLIFrameElement) Normalize()  {
+func (val HTMLIFrameElement) Normalize() {
 	js.Value(val).Call("normalize")
 }
-func (val HTMLIFrameElement) RemoveChild(child Node)  {
+func (val HTMLIFrameElement) RemoveChild(child Node) {
 	js.Value(val).Call("removeChild", convertNodeToValue(child))
 }
-func (val HTMLIFrameElement) ReplaceChild(newChild Node, oldChild Node)  {
+func (val HTMLIFrameElement) ReplaceChild(newChild Node, oldChild Node) {
 	js.Value(val).Call("replaceChild", newChild, oldChild)
 }
-func (val HTMLIFrameElement) AddEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)  {
+func (val HTMLIFrameElement) AddEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool) {
 	js.Value(val).Call("addEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
-func (val HTMLIFrameElement) After(node ...Node)  {
+func (val HTMLIFrameElement) After(node ...Node) {
 	js.Value(val).Call("after", nodesToValues(node)...)
 }
-func (val HTMLIFrameElement) Append(params ...Node)  {
+func (val HTMLIFrameElement) Append(params ...Node) {
 	js.Value(val).Call("append", nodesToValues(params)...)
 }
-func (val HTMLIFrameElement) Before(params ...Node)  {
+func (val HTMLIFrameElement) Before(params ...Node) {
 	js.Value(val).Call("before", nodesToValues(params)...)
 }
 func (val HTMLIFrameElement) Closest(selector string) Element {
@@ -953,16 +953,16 @@ func (val HTMLIFrameElement) HasPointerCapture(pointerId int) bool {
 func (val HTMLIFrameElement) InsertAdjacentElement(position AdjacentPosition, element Element) Element {
 	return wrapElement(js.Value(val).Call("insertAdjacentElement", string(position), element))
 }
-func (val HTMLIFrameElement) InsertAdjacentHTML(position AdjacentPosition, text string)  {
+func (val HTMLIFrameElement) InsertAdjacentHTML(position AdjacentPosition, text string) {
 	js.Value(val).Call("insertAdjacentHTML", string(position), text)
 }
-func (val HTMLIFrameElement) InsertAdjacentText(position AdjacentPosition, text string)  {
+func (val HTMLIFrameElement) InsertAdjacentText(position AdjacentPosition, text string) {
 	js.Value(val).Call("insertAdjacentText", string(position), text)
 }
 func (val HTMLIFrameElement) Matches(selectors string) HTMLCollection {
 	return wrapHTMLCollection(js.Value(val).Call("matches", selectors))
 }
-func (val HTMLIFrameElement) Prepend(nodes ...Node)  {
+func (val HTMLIFrameElement) Prepend(nodes ...Node) {
 	js.Value(val).Call("prepend", nodesToValues(nodes)...)
 }
 func (val HTMLIFrameElement) QuerySelector(selectors string) Element {
@@ -971,61 +971,61 @@ func (val HTMLIFrameElement) QuerySelector(selectors string) Element {
 func (val HTMLIFrameElement) QuerySelectorAll(selectors string) NodeList {
 	return wrapNodeList(js.Value(val).Call("querySelectorAll", selectors))
 }
-func (val HTMLIFrameElement) ReleasePointerCapture(pointerId int)  {
+func (val HTMLIFrameElement) ReleasePointerCapture(pointerId int) {
 	js.Value(val).Call("releasePointerCapture", pointerId)
 }
-func (val HTMLIFrameElement) Remove()  {
+func (val HTMLIFrameElement) Remove() {
 	js.Value(val).Call("remove")
 }
-func (val HTMLIFrameElement) RemoveAttribute(attrName string)  {
+func (val HTMLIFrameElement) RemoveAttribute(attrName string) {
 	js.Value(val).Call("removeAttribute", attrName)
 }
-func (val HTMLIFrameElement) RemoveAttributeNS(namespaceURI string, localName string)  {
+func (val HTMLIFrameElement) RemoveAttributeNS(namespaceURI string, localName string) {
 	js.Value(val).Call("removeAttributeNS", namespaceURI, localName)
 }
-func (val HTMLIFrameElement) RemoveEventListener(eventType string, listener func(event Event), options AddEventListenerOptions, useCapture bool)  {
+func (val HTMLIFrameElement) RemoveEventListener(eventType string, listener func(event Event), options AddEventListenerOptions, useCapture bool) {
 	js.Value(val).Call("removeEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
-func (val HTMLIFrameElement) ReplaceChildren(node ...Node)  {
+func (val HTMLIFrameElement) ReplaceChildren(node ...Node) {
 	js.Value(val).Call("replaceChildren", nodesToValues(node)...)
 }
-func (val HTMLIFrameElement) ReplaceWith(node ...Node)  {
+func (val HTMLIFrameElement) ReplaceWith(node ...Node) {
 	js.Value(val).Call("replaceWith", nodesToValues(node)...)
 }
-func (val HTMLIFrameElement) Scroll(options ScrollOptions)  {
+func (val HTMLIFrameElement) Scroll(options ScrollOptions) {
 	js.Value(val).Call("scroll", wrapOptions(options))
 }
-func (val HTMLIFrameElement) ScrollBy(options ScrollOptions)  {
+func (val HTMLIFrameElement) ScrollBy(options ScrollOptions) {
 	js.Value(val).Call("scrollBy", wrapOptions(options))
 }
-func (val HTMLIFrameElement) ScrollIntoView(options ScrollIntoViewOptions)  {
+func (val HTMLIFrameElement) ScrollIntoView(options ScrollIntoViewOptions) {
 	js.Value(val).Call("scrollIntoView", wrapOptions(options))
 }
-func (val HTMLIFrameElement) ScrollTo(options ScrollOptions)  {
+func (val HTMLIFrameElement) ScrollTo(options ScrollOptions) {
 	js.Value(val).Call("scrollTo", wrapOptions(options))
 }
-func (val HTMLIFrameElement) SetAttribute(name string, value string)  {
+func (val HTMLIFrameElement) SetAttribute(name string, value string) {
 	js.Value(val).Call("setAttribute", name, value)
 }
-func (val HTMLIFrameElement) SetAttributeNS(namespace string, name string, value string)  {
+func (val HTMLIFrameElement) SetAttributeNS(namespace string, name string, value string) {
 	js.Value(val).Call("setAttributeNS", namespace, name, value)
 }
-func (val HTMLIFrameElement) SetPointerCapture(pointerId int)  {
+func (val HTMLIFrameElement) SetPointerCapture(pointerId int) {
 	js.Value(val).Call("setPointerCapture", pointerId)
 }
-func (val HTMLIFrameElement) ToggleAttribute(name string)  {
+func (val HTMLIFrameElement) ToggleAttribute(name string) {
 	js.Value(val).Call("toggleAttribute", name)
 }
-func (val HTMLIFrameElement) Blur()  {
+func (val HTMLIFrameElement) Blur() {
 	js.Value(val).Call("blur")
 }
-func (val HTMLIFrameElement) Click()  {
+func (val HTMLIFrameElement) Click() {
 	js.Value(val).Call("click")
 }
-func (val HTMLIFrameElement) Focus()  {
+func (val HTMLIFrameElement) Focus() {
 	js.Value(val).Call("focus")
 }
-func (val HTMLIFrameElement) FocusWithOptions(options FocusOptions)  {
+func (val HTMLIFrameElement) FocusWithOptions(options FocusOptions) {
 	js.Value(val).Call("focus", wrapOptions(options))
 }
 
@@ -1103,13 +1103,13 @@ func (val DOMTokenList) Item(index int) string {
 func (val DOMTokenList) Contains(token string) bool {
 	return js.Value(val).Call("contains", token).Bool()
 }
-func (val DOMTokenList) Add(token ...string)  {
+func (val DOMTokenList) Add(token ...string) {
 	js.Value(val).Call("add", stringsToAny(token)...)
 }
-func (val DOMTokenList) Remove(token ...string)  {
+func (val DOMTokenList) Remove(token ...string) {
 	js.Value(val).Call("remove", stringsToAny(token)...)
 }
-func (val DOMTokenList) Replace(oldToken string, newToken string)  {
+func (val DOMTokenList) Replace(oldToken string, newToken string) {
 	js.Value(val).Call("replace", oldToken, newToken)
 }
 func (val DOMTokenList) Supports(token string) bool {
@@ -1253,7 +1253,7 @@ func (val HTMLElement) AccessKeyLabel() string {
 func (val HTMLElement) IsContentEditable() bool {
 	return js.Value(val).Get("isContentEditable").Bool()
 }
-func (val HTMLElement) Dataset() DOMStringMap {
+func (val HTMLElement) Dataset() StringMap {
 	return wrapDOMStringMap(js.Value(val).Get("dataset"))
 }
 func (val HTMLElement) Dir() string {
@@ -1355,25 +1355,25 @@ func (val HTMLElement) LookupPrefix(prefix string) string {
 func (val HTMLElement) LookupNamespaceURI(prefix string) string {
 	return js.Value(val).Call("lookupNamespaceURI", prefix).String()
 }
-func (val HTMLElement) Normalize()  {
+func (val HTMLElement) Normalize() {
 	js.Value(val).Call("normalize")
 }
-func (val HTMLElement) RemoveChild(child Node)  {
+func (val HTMLElement) RemoveChild(child Node) {
 	js.Value(val).Call("removeChild", convertNodeToValue(child))
 }
-func (val HTMLElement) ReplaceChild(newChild Node, oldChild Node)  {
+func (val HTMLElement) ReplaceChild(newChild Node, oldChild Node) {
 	js.Value(val).Call("replaceChild", newChild, oldChild)
 }
-func (val HTMLElement) AddEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)  {
+func (val HTMLElement) AddEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool) {
 	js.Value(val).Call("addEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
-func (val HTMLElement) After(node ...Node)  {
+func (val HTMLElement) After(node ...Node) {
 	js.Value(val).Call("after", nodesToValues(node)...)
 }
-func (val HTMLElement) Append(params ...Node)  {
+func (val HTMLElement) Append(params ...Node) {
 	js.Value(val).Call("append", nodesToValues(params)...)
 }
-func (val HTMLElement) Before(params ...Node)  {
+func (val HTMLElement) Before(params ...Node) {
 	js.Value(val).Call("before", nodesToValues(params)...)
 }
 func (val HTMLElement) Closest(selector string) Element {
@@ -1418,16 +1418,16 @@ func (val HTMLElement) HasPointerCapture(pointerId int) bool {
 func (val HTMLElement) InsertAdjacentElement(position AdjacentPosition, element Element) Element {
 	return wrapElement(js.Value(val).Call("insertAdjacentElement", string(position), element))
 }
-func (val HTMLElement) InsertAdjacentHTML(position AdjacentPosition, text string)  {
+func (val HTMLElement) InsertAdjacentHTML(position AdjacentPosition, text string) {
 	js.Value(val).Call("insertAdjacentHTML", string(position), text)
 }
-func (val HTMLElement) InsertAdjacentText(position AdjacentPosition, text string)  {
+func (val HTMLElement) InsertAdjacentText(position AdjacentPosition, text string) {
 	js.Value(val).Call("insertAdjacentText", string(position), text)
 }
 func (val HTMLElement) Matches(selectors string) HTMLCollection {
 	return wrapHTMLCollection(js.Value(val).Call("matches", selectors))
 }
-func (val HTMLElement) Prepend(nodes ...Node)  {
+func (val HTMLElement) Prepend(nodes ...Node) {
 	js.Value(val).Call("prepend", nodesToValues(nodes)...)
 }
 func (val HTMLElement) QuerySelector(selectors string) Element {
@@ -1436,61 +1436,61 @@ func (val HTMLElement) QuerySelector(selectors string) Element {
 func (val HTMLElement) QuerySelectorAll(selectors string) NodeList {
 	return wrapNodeList(js.Value(val).Call("querySelectorAll", selectors))
 }
-func (val HTMLElement) ReleasePointerCapture(pointerId int)  {
+func (val HTMLElement) ReleasePointerCapture(pointerId int) {
 	js.Value(val).Call("releasePointerCapture", pointerId)
 }
-func (val HTMLElement) Remove()  {
+func (val HTMLElement) Remove() {
 	js.Value(val).Call("remove")
 }
-func (val HTMLElement) RemoveAttribute(attrName string)  {
+func (val HTMLElement) RemoveAttribute(attrName string) {
 	js.Value(val).Call("removeAttribute", attrName)
 }
-func (val HTMLElement) RemoveAttributeNS(namespaceURI string, localName string)  {
+func (val HTMLElement) RemoveAttributeNS(namespaceURI string, localName string) {
 	js.Value(val).Call("removeAttributeNS", namespaceURI, localName)
 }
-func (val HTMLElement) RemoveEventListener(eventType string, listener func(event Event), options AddEventListenerOptions, useCapture bool)  {
+func (val HTMLElement) RemoveEventListener(eventType string, listener func(event Event), options AddEventListenerOptions, useCapture bool) {
 	js.Value(val).Call("removeEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
-func (val HTMLElement) ReplaceChildren(node ...Node)  {
+func (val HTMLElement) ReplaceChildren(node ...Node) {
 	js.Value(val).Call("replaceChildren", nodesToValues(node)...)
 }
-func (val HTMLElement) ReplaceWith(node ...Node)  {
+func (val HTMLElement) ReplaceWith(node ...Node) {
 	js.Value(val).Call("replaceWith", nodesToValues(node)...)
 }
-func (val HTMLElement) Scroll(options ScrollOptions)  {
+func (val HTMLElement) Scroll(options ScrollOptions) {
 	js.Value(val).Call("scroll", wrapOptions(options))
 }
-func (val HTMLElement) ScrollBy(options ScrollOptions)  {
+func (val HTMLElement) ScrollBy(options ScrollOptions) {
 	js.Value(val).Call("scrollBy", wrapOptions(options))
 }
-func (val HTMLElement) ScrollIntoView(options ScrollIntoViewOptions)  {
+func (val HTMLElement) ScrollIntoView(options ScrollIntoViewOptions) {
 	js.Value(val).Call("scrollIntoView", wrapOptions(options))
 }
-func (val HTMLElement) ScrollTo(options ScrollOptions)  {
+func (val HTMLElement) ScrollTo(options ScrollOptions) {
 	js.Value(val).Call("scrollTo", wrapOptions(options))
 }
-func (val HTMLElement) SetAttribute(name string, value string)  {
+func (val HTMLElement) SetAttribute(name string, value string) {
 	js.Value(val).Call("setAttribute", name, value)
 }
-func (val HTMLElement) SetAttributeNS(namespace string, name string, value string)  {
+func (val HTMLElement) SetAttributeNS(namespace string, name string, value string) {
 	js.Value(val).Call("setAttributeNS", namespace, name, value)
 }
-func (val HTMLElement) SetPointerCapture(pointerId int)  {
+func (val HTMLElement) SetPointerCapture(pointerId int) {
 	js.Value(val).Call("setPointerCapture", pointerId)
 }
-func (val HTMLElement) ToggleAttribute(name string)  {
+func (val HTMLElement) ToggleAttribute(name string) {
 	js.Value(val).Call("toggleAttribute", name)
 }
-func (val HTMLElement) Blur()  {
+func (val HTMLElement) Blur() {
 	js.Value(val).Call("blur")
 }
-func (val HTMLElement) Click()  {
+func (val HTMLElement) Click() {
 	js.Value(val).Call("click")
 }
-func (val HTMLElement) Focus()  {
+func (val HTMLElement) Focus() {
 	js.Value(val).Call("focus")
 }
-func (val HTMLElement) FocusWithOptions(options FocusOptions)  {
+func (val HTMLElement) FocusWithOptions(options FocusOptions) {
 	js.Value(val).Call("focus", wrapOptions(options))
 }
 
@@ -1517,13 +1517,13 @@ func (val CSSStyleDeclaration) GetPropertyValue(property string) string {
 func (val CSSStyleDeclaration) Item(index int) string {
 	return js.Value(val).Call("item", index).String()
 }
-func (val CSSStyleDeclaration) RemoveProperty(property string)  {
+func (val CSSStyleDeclaration) RemoveProperty(property string) {
 	js.Value(val).Call("removeProperty", property)
 }
-func (val CSSStyleDeclaration) SetProperty(property string, value string)  {
+func (val CSSStyleDeclaration) SetProperty(property string, value string) {
 	js.Value(val).Call("setProperty", property, value)
 }
-func (val CSSStyleDeclaration) SetPropertyWithPriority(property string, value string, priority string)  {
+func (val CSSStyleDeclaration) SetPropertyWithPriority(property string, value string, priority string) {
 	js.Value(val).Call("setProperty", property, value, priority)
 }
 
@@ -1610,13 +1610,13 @@ func (val DocumentFragment) LookupPrefix(prefix string) string {
 func (val DocumentFragment) LookupNamespaceURI(prefix string) string {
 	return js.Value(val).Call("lookupNamespaceURI", prefix).String()
 }
-func (val DocumentFragment) Normalize()  {
+func (val DocumentFragment) Normalize() {
 	js.Value(val).Call("normalize")
 }
-func (val DocumentFragment) RemoveChild(child Node)  {
+func (val DocumentFragment) RemoveChild(child Node) {
 	js.Value(val).Call("removeChild", convertNodeToValue(child))
 }
-func (val DocumentFragment) ReplaceChild(newChild Node, oldChild Node)  {
+func (val DocumentFragment) ReplaceChild(newChild Node, oldChild Node) {
 	js.Value(val).Call("replaceChild", newChild, oldChild)
 }
 
@@ -1778,25 +1778,25 @@ func (val SVGElement) LookupPrefix(prefix string) string {
 func (val SVGElement) LookupNamespaceURI(prefix string) string {
 	return js.Value(val).Call("lookupNamespaceURI", prefix).String()
 }
-func (val SVGElement) Normalize()  {
+func (val SVGElement) Normalize() {
 	js.Value(val).Call("normalize")
 }
-func (val SVGElement) RemoveChild(child Node)  {
+func (val SVGElement) RemoveChild(child Node) {
 	js.Value(val).Call("removeChild", convertNodeToValue(child))
 }
-func (val SVGElement) ReplaceChild(newChild Node, oldChild Node)  {
+func (val SVGElement) ReplaceChild(newChild Node, oldChild Node) {
 	js.Value(val).Call("replaceChild", newChild, oldChild)
 }
-func (val SVGElement) AddEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)  {
+func (val SVGElement) AddEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool) {
 	js.Value(val).Call("addEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
-func (val SVGElement) After(node ...Node)  {
+func (val SVGElement) After(node ...Node) {
 	js.Value(val).Call("after", nodesToValues(node)...)
 }
-func (val SVGElement) Append(params ...Node)  {
+func (val SVGElement) Append(params ...Node) {
 	js.Value(val).Call("append", nodesToValues(params)...)
 }
-func (val SVGElement) Before(params ...Node)  {
+func (val SVGElement) Before(params ...Node) {
 	js.Value(val).Call("before", nodesToValues(params)...)
 }
 func (val SVGElement) Closest(selector string) Element {
@@ -1841,16 +1841,16 @@ func (val SVGElement) HasPointerCapture(pointerId int) bool {
 func (val SVGElement) InsertAdjacentElement(position AdjacentPosition, element Element) Element {
 	return wrapElement(js.Value(val).Call("insertAdjacentElement", string(position), element))
 }
-func (val SVGElement) InsertAdjacentHTML(position AdjacentPosition, text string)  {
+func (val SVGElement) InsertAdjacentHTML(position AdjacentPosition, text string) {
 	js.Value(val).Call("insertAdjacentHTML", string(position), text)
 }
-func (val SVGElement) InsertAdjacentText(position AdjacentPosition, text string)  {
+func (val SVGElement) InsertAdjacentText(position AdjacentPosition, text string) {
 	js.Value(val).Call("insertAdjacentText", string(position), text)
 }
 func (val SVGElement) Matches(selectors string) HTMLCollection {
 	return wrapHTMLCollection(js.Value(val).Call("matches", selectors))
 }
-func (val SVGElement) Prepend(nodes ...Node)  {
+func (val SVGElement) Prepend(nodes ...Node) {
 	js.Value(val).Call("prepend", nodesToValues(nodes)...)
 }
 func (val SVGElement) QuerySelector(selectors string) Element {
@@ -1859,49 +1859,49 @@ func (val SVGElement) QuerySelector(selectors string) Element {
 func (val SVGElement) QuerySelectorAll(selectors string) NodeList {
 	return wrapNodeList(js.Value(val).Call("querySelectorAll", selectors))
 }
-func (val SVGElement) ReleasePointerCapture(pointerId int)  {
+func (val SVGElement) ReleasePointerCapture(pointerId int) {
 	js.Value(val).Call("releasePointerCapture", pointerId)
 }
-func (val SVGElement) Remove()  {
+func (val SVGElement) Remove() {
 	js.Value(val).Call("remove")
 }
-func (val SVGElement) RemoveAttribute(attrName string)  {
+func (val SVGElement) RemoveAttribute(attrName string) {
 	js.Value(val).Call("removeAttribute", attrName)
 }
-func (val SVGElement) RemoveAttributeNS(namespaceURI string, localName string)  {
+func (val SVGElement) RemoveAttributeNS(namespaceURI string, localName string) {
 	js.Value(val).Call("removeAttributeNS", namespaceURI, localName)
 }
-func (val SVGElement) RemoveEventListener(eventType string, listener func(event Event), options AddEventListenerOptions, useCapture bool)  {
+func (val SVGElement) RemoveEventListener(eventType string, listener func(event Event), options AddEventListenerOptions, useCapture bool) {
 	js.Value(val).Call("removeEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
-func (val SVGElement) ReplaceChildren(node ...Node)  {
+func (val SVGElement) ReplaceChildren(node ...Node) {
 	js.Value(val).Call("replaceChildren", nodesToValues(node)...)
 }
-func (val SVGElement) ReplaceWith(node ...Node)  {
+func (val SVGElement) ReplaceWith(node ...Node) {
 	js.Value(val).Call("replaceWith", nodesToValues(node)...)
 }
-func (val SVGElement) Scroll(options ScrollOptions)  {
+func (val SVGElement) Scroll(options ScrollOptions) {
 	js.Value(val).Call("scroll", wrapOptions(options))
 }
-func (val SVGElement) ScrollBy(options ScrollOptions)  {
+func (val SVGElement) ScrollBy(options ScrollOptions) {
 	js.Value(val).Call("scrollBy", wrapOptions(options))
 }
-func (val SVGElement) ScrollIntoView(options ScrollIntoViewOptions)  {
+func (val SVGElement) ScrollIntoView(options ScrollIntoViewOptions) {
 	js.Value(val).Call("scrollIntoView", wrapOptions(options))
 }
-func (val SVGElement) ScrollTo(options ScrollOptions)  {
+func (val SVGElement) ScrollTo(options ScrollOptions) {
 	js.Value(val).Call("scrollTo", wrapOptions(options))
 }
-func (val SVGElement) SetAttribute(name string, value string)  {
+func (val SVGElement) SetAttribute(name string, value string) {
 	js.Value(val).Call("setAttribute", name, value)
 }
-func (val SVGElement) SetAttributeNS(namespace string, name string, value string)  {
+func (val SVGElement) SetAttributeNS(namespace string, name string, value string) {
 	js.Value(val).Call("setAttributeNS", namespace, name, value)
 }
-func (val SVGElement) SetPointerCapture(pointerId int)  {
+func (val SVGElement) SetPointerCapture(pointerId int) {
 	js.Value(val).Call("setPointerCapture", pointerId)
 }
-func (val SVGElement) ToggleAttribute(name string)  {
+func (val SVGElement) ToggleAttribute(name string) {
 	js.Value(val).Call("toggleAttribute", name)
 }
 
@@ -2072,19 +2072,19 @@ func (val Document) LookupPrefix(prefix string) string {
 func (val Document) LookupNamespaceURI(prefix string) string {
 	return js.Value(val).Call("lookupNamespaceURI", prefix).String()
 }
-func (val Document) Normalize()  {
+func (val Document) Normalize() {
 	js.Value(val).Call("normalize")
 }
-func (val Document) RemoveChild(child Node)  {
+func (val Document) RemoveChild(child Node) {
 	js.Value(val).Call("removeChild", convertNodeToValue(child))
 }
-func (val Document) ReplaceChild(newChild Node, oldChild Node)  {
+func (val Document) ReplaceChild(newChild Node, oldChild Node) {
 	js.Value(val).Call("replaceChild", newChild, oldChild)
 }
-func (val Document) Append(params ...Node)  {
+func (val Document) Append(params ...Node) {
 	js.Value(val).Call("append", nodesToValues(params)...)
 }
-func (val Document) AdoptNode(externalNode Node)  {
+func (val Document) AdoptNode(externalNode Node) {
 	js.Value(val).Call("adoptNode", convertNodeToValue(externalNode))
 }
 func (val Document) CreateElement(tagName string) Element {
@@ -2105,7 +2105,7 @@ func (val Document) GetElementByID(id string) Element {
 func (val Document) GetElementsByClassName(id string) HTMLCollection {
 	return wrapHTMLCollection(js.Value(val).Call("getElementsByClassName", id))
 }
-func (val Document) Prepend(nodes ...Node)  {
+func (val Document) Prepend(nodes ...Node) {
 	js.Value(val).Call("prepend", nodesToValues(nodes)...)
 }
 func (val Document) QuerySelector(selectors string) Element {
@@ -2141,34 +2141,34 @@ func (val Window) Name() string {
 func (val Window) Parent() Window {
 	return wrapWindow(js.Value(val).Get("parent"))
 }
-func (val Window) Alert(message string)  {
+func (val Window) Alert(message string) {
 	js.Value(val).Call("alert", message)
 }
-func (val Window) Blur()  {
+func (val Window) Blur() {
 	js.Value(val).Call("blur")
 }
-func (val Window) Close()  {
+func (val Window) Close() {
 	js.Value(val).Call("close")
 }
 func (val Window) Confirm(message string) bool {
 	return js.Value(val).Call("confirm", message).Bool()
 }
-func (val Window) Focus()  {
+func (val Window) Focus() {
 	js.Value(val).Call("focus")
 }
-func (val Window) GetComputedStyle(el Element)  {
+func (val Window) GetComputedStyle(el Element) {
 	js.Value(val).Call("getComputedStyle", el)
 }
-func (val Window) Open(url string, target string, windowFeatures string)  {
+func (val Window) Open(url string, target string, windowFeatures string) {
 	js.Value(val).Call("open", url, target, windowFeatures)
 }
-func (val Window) PostMessage(message any, postMessage string)  {
+func (val Window) PostMessage(message any, postMessage string) {
 	js.Value(val).Call("postMessage", message, postMessage)
 }
 func (val Window) Prompt(message string, defaultValue string) string {
 	return js.Value(val).Call("prompt", message, defaultValue).String()
 }
-func (val Window) AddEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)  {
+func (val Window) AddEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool) {
 	js.Value(val).Call("addEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
 
@@ -2308,12 +2308,12 @@ func (val Text) LookupPrefix(prefix string) string {
 func (val Text) LookupNamespaceURI(prefix string) string {
 	return js.Value(val).Call("lookupNamespaceURI", prefix).String()
 }
-func (val Text) Normalize()  {
+func (val Text) Normalize() {
 	js.Value(val).Call("normalize")
 }
-func (val Text) RemoveChild(child Node)  {
+func (val Text) RemoveChild(child Node) {
 	js.Value(val).Call("removeChild", convertNodeToValue(child))
 }
-func (val Text) ReplaceChild(newChild Node, oldChild Node)  {
+func (val Text) ReplaceChild(newChild Node, oldChild Node) {
 	js.Value(val).Call("replaceChild", newChild, oldChild)
 }
