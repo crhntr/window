@@ -10,6 +10,9 @@ import (
 	"go/token"
 	"io"
 	"os"
+	"path/filepath"
+	"reflect"
+	"strconv"
 
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -17,7 +20,7 @@ import (
 )
 
 func main() {
-	generationInput, readFileErr := os.ReadFile("dom.yml")
+	generationInput, readFileErr := os.ReadFile(os.Args[1])
 	if readFileErr != nil {
 		panic(readFileErr)
 	}
@@ -25,7 +28,7 @@ func main() {
 	d := yaml.NewDecoder(bytes.NewReader(generationInput))
 	d.KnownFields(true)
 	var specs SpecificationList
-	for {
+	for documentIndex := 0; ; documentIndex++ {
 		var enc encodedSpec
 		err := d.Decode(&enc)
 		if err != nil {
@@ -34,9 +37,12 @@ func main() {
 			}
 			panic(err)
 		}
+		if enc.isZero() {
+			continue
+		}
 		spec, err := enc.declarationProviderFactory()
 		if err != nil {
-			panic(err)
+			panic(fmt.Errorf("failed to parse %d: %w", documentIndex, err))
 		}
 		specs = append(specs, spec)
 	}
@@ -57,7 +63,7 @@ func main() {
 		panic(err)
 	}
 
-	generatedFile, err := os.Create("generated.go")
+	generatedFile, err := os.Create(filepath.Join("generated.go"))
 	if err != nil {
 		panic(err)
 	}
@@ -81,6 +87,10 @@ type encodedSpec struct {
 	Spec       yaml.Node `yaml:"spec"`
 }
 
+func (encoded encodedSpec) isZero() bool {
+	return reflect.ValueOf(encoded).IsZero()
+}
+
 func (encoded encodedSpec) ID() Identifier { return encoded.Identifier }
 
 func (encoded encodedSpec) declarationProviderFactory() (Specification, error) {
@@ -90,6 +100,8 @@ func (encoded encodedSpec) declarationProviderFactory() (Specification, error) {
 		spec = &Class{encodedSpec: encoded}
 	case "interface":
 		spec = &Interface{encodedSpec: encoded}
+	default:
+		return nil, fmt.Errorf("kind %q not implmented", encoded.Kind)
 	}
 	err := encoded.Spec.Decode(spec)
 	if err != nil {
@@ -136,6 +148,7 @@ type Property struct {
 	Type       string `yaml:"type"`
 	IsArray    bool   `yaml:"isArray"`
 	WrapResult string `yaml:"wrap"`
+	IsSettable bool   `yaml:"isSettable"`
 }
 
 type Method struct {
@@ -151,12 +164,13 @@ type Method struct {
 type Parameter struct {
 	ID         Identifier `yaml:",inline"`
 	Type       string     `yaml:"type"`
-	IsVariadic bool       `yaml:"IsVariadic"`
+	IsVariadic bool       `yaml:"isVariadic"`
+	Wrap       string     `yaml:"wrap"`
 }
 
 var titleCase = cases.Title(language.AmericanEnglish, cases.NoLower)
 
-func (property Property) functionDeclaration(receiverIdentifier *ast.Ident) *ast.FuncDecl {
+func (property Property) getterFunctionDeclaration(receiverIdentifier *ast.Ident) *ast.FuncDecl {
 	receiver := ast.NewIdent("val")
 
 	retExprPrefix, retExpSuffix := wrapResult(property.Type, property.WrapResult)
@@ -169,7 +183,7 @@ func (property Property) functionDeclaration(receiverIdentifier *ast.Ident) *ast
 		}
 		exprString = fmt.Sprintf(`js.Value(%s).Length()`, receiver.Name)
 	default:
-		exprString = fmt.Sprintf(`%sjs.Value(%s).Call(%q)%s`, retExprPrefix, receiver.Name, property.Name, retExpSuffix)
+		exprString = fmt.Sprintf(`%sjs.Value(%s).Get(%q)%s`, retExprPrefix, receiver.Name, property.Name, retExpSuffix)
 	}
 	expr, err := parser.ParseExpr(exprString)
 	if err != nil {
@@ -191,7 +205,47 @@ func (property Property) functionDeclaration(receiverIdentifier *ast.Ident) *ast
 				Type:  receiverIdentifier,
 			},
 		}},
-		Type: property.funcType(),
+		Type: property.getterFuncType(),
+		Body: body,
+	}
+}
+
+func (property Property) setterFunctionDeclaration(receiverIdentifier *ast.Ident) *ast.FuncDecl {
+	receiver := ast.NewIdent("val")
+
+	body := &ast.BlockStmt{
+		List: []ast.Stmt{
+			&ast.ExprStmt{
+				X: &ast.CallExpr{
+					Fun: &ast.SelectorExpr{
+						X: &ast.CallExpr{
+							Fun: &ast.SelectorExpr{
+								X:   ast.NewIdent("js"),
+								Sel: ast.NewIdent("Value"),
+							},
+							Args: []ast.Expr{
+								receiver,
+							},
+						},
+						Sel: ast.NewIdent("Set"),
+					},
+					Args: []ast.Expr{
+						&ast.BasicLit{Kind: token.STRING, Value: strconv.Quote(property.Name)},
+						ast.NewIdent(property.Name),
+					},
+				},
+			},
+		},
+	}
+	return &ast.FuncDecl{
+		Name: ast.NewIdent("Set" + property.ExportedIdentifier().Name),
+		Recv: &ast.FieldList{List: []*ast.Field{
+			{
+				Names: []*ast.Ident{receiver},
+				Type:  receiverIdentifier,
+			},
+		}},
+		Type: property.setterFuncType(),
 		Body: body,
 	}
 }
@@ -228,6 +282,14 @@ func (method Method) functionDeclaration(receiverIdentifier *ast.Ident) *ast.Fun
 
 	params := ""
 	for _, param := range method.Parameters {
+		if param.IsVariadic {
+			params += fmt.Sprintf(", %s(%s)...", param.Wrap, param.ID.Name)
+			continue
+		}
+		if param.Wrap != "" {
+			params += fmt.Sprintf(", %s(%s)", param.Wrap, param.ID.Name)
+			continue
+		}
 		params += ", " + param.ID.Name
 	}
 
@@ -260,7 +322,7 @@ func (method Method) functionDeclaration(receiverIdentifier *ast.Ident) *ast.Fun
 	}
 }
 
-func (property Property) funcType() *ast.FuncType {
+func (property Property) getterFuncType() *ast.FuncType {
 	funcType := new(ast.FuncType)
 	funcType.Params = new(ast.FieldList)
 
@@ -273,11 +335,34 @@ func (property Property) funcType() *ast.FuncType {
 	return funcType
 }
 
+func (property Property) setterFuncType() *ast.FuncType {
+	funcType := new(ast.FuncType)
+	funcType.Params = new(ast.FieldList)
+
+	funcType.Params = &ast.FieldList{
+		List: []*ast.Field{{
+			Names: []*ast.Ident{ast.NewIdent(property.Name)},
+			Type:  ast.NewIdent(property.Type),
+		}},
+	}
+
+	return funcType
+}
+
 func (method Method) funcType() *ast.FuncType {
 	funcType := new(ast.FuncType)
 	funcType.Params = new(ast.FieldList)
 
 	for _, param := range method.Parameters {
+		if param.IsVariadic {
+			funcType.Params.List = append(funcType.Params.List, &ast.Field{
+				Names: []*ast.Ident{ast.NewIdent(param.ID.Name)},
+				Type: &ast.Ellipsis{
+					Elt: ast.NewIdent(param.Type),
+				},
+			})
+			continue
+		}
 		funcType.Params.List = append(funcType.Params.List, &ast.Field{
 			Names: []*ast.Ident{ast.NewIdent(param.ID.Name)},
 			Type:  ast.NewIdent(param.Type),
@@ -291,11 +376,20 @@ func (method Method) funcType() *ast.FuncType {
 	return funcType
 }
 
-func (property Property) interfaceMethodSignature() *ast.Field {
-	return &ast.Field{
-		Names: []*ast.Ident{property.ExportedIdentifier()},
-		Type:  property.funcType(),
+func (property Property) interfaceMethodSignature() []*ast.Field {
+	if !property.IsSettable {
+		return []*ast.Field{{
+			Names: []*ast.Ident{property.ExportedIdentifier()},
+			Type:  property.getterFuncType(),
+		}}
 	}
+	return []*ast.Field{{
+		Names: []*ast.Ident{property.ExportedIdentifier()},
+		Type:  property.getterFuncType(),
+	}, {
+		Names: []*ast.Ident{ast.NewIdent("Set" + property.ExportedIdentifier().Name)},
+		Type:  property.setterFuncType(),
+	}}
 }
 
 func (method Method) interfaceMethodSignature() *ast.Field {
@@ -310,7 +404,7 @@ func (spec Interface) interfaceDeclaration() *ast.GenDecl {
 	interfaceType.Methods = new(ast.FieldList)
 
 	for _, property := range spec.Properties {
-		interfaceType.Methods.List = append(interfaceType.Methods.List, property.interfaceMethodSignature())
+		interfaceType.Methods.List = append(interfaceType.Methods.List, property.interfaceMethodSignature()...)
 	}
 
 	for _, method := range spec.Methods {
@@ -378,7 +472,10 @@ func (spec Class) classDeclarations() []ast.Decl {
 	declarations = append(declarations, wrapDeclaration)
 
 	for _, property := range spec.Properties {
-		declarations = append(declarations, property.functionDeclaration(classDeclaration.Name))
+		declarations = append(declarations, property.getterFunctionDeclaration(classDeclaration.Name))
+		if property.IsSettable {
+			declarations = append(declarations, property.setterFunctionDeclaration(classDeclaration.Name))
+		}
 	}
 	for _, method := range spec.Methods {
 		declarations = append(declarations, method.functionDeclaration(classDeclaration.Name))
@@ -405,7 +502,7 @@ func generate(list SpecificationList) (ast.Node, error) {
 	//	List: []*ast.Comment{{Text: "GENERATED CODE. DO NOT EDIT"}},
 	//}
 
-	file.Name = ast.NewIdent("window")
+	file.Name = ast.NewIdent("dom")
 
 	file.Decls = append(file.Decls, &ast.GenDecl{
 		Tok: token.IMPORT,
