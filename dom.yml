@@ -29,6 +29,39 @@ spec:
     - name: stopImmediatePropagation
     - name: stopPropagation
 ---
+name: EventTarget
+kind: interface
+spec:
+  methods:
+    - name: addEventListener
+      params:
+        - name: eventType
+          type: string
+        - name: listener
+          type: js.Func
+        - name: options
+          type: AddEventListenerOptions
+          wrap: wrapOptions
+        - name: useCapture
+          type: bool
+    - name: removeEventListener
+      params:
+        - name: eventType
+          type: string
+        - name: listener
+          type: func(event Event)
+        - name: options
+          type: AddEventListenerOptions
+          wrap: wrapOptions
+        - name: useCapture
+          type: bool
+    - name: dispatchEvent
+      params:
+        - name: event
+          type: Event
+      result:
+        type: bool
+---
 name: GenericEvent
 parent: Event
 kind: class
@@ -197,6 +230,7 @@ spec:
 ---
 name: Node
 kind: interface
+parent: EventTarget
 spec:
   properties:
     - name: baseURI
@@ -381,18 +415,6 @@ spec:
     - name: tagName
       type: string
   methods:
-    - &addEventListener
-      name: addEventListener
-      params:
-        - name: eventType
-          type: string
-        - name: listener
-          type: js.Func
-        - name: options
-          type: AddEventListenerOptions
-          wrap: wrapOptions
-        - name: useCapture
-          type: bool
     - name: after
       params:
         - name: node
@@ -425,12 +447,6 @@ spec:
           type: string
       result:
         type: Element
-    - name: dispatchEvent
-      params:
-        - name: event
-          type: Event
-      result:
-        type: bool
     - name: getAttribute
 #     name_override: Attribute
       params:
@@ -568,17 +584,6 @@ spec:
           type: string
         - name: localName
           type: string
-    - name: removeEventListener
-      params:
-        - name: eventType
-          type: string
-        - name: listener
-          type: func(event Event)
-        - name: options
-          type: AddEventListenerOptions
-          wrap: wrapOptions
-        - name: useCapture
-          type: bool
     - name: replaceChildren
       params:
         - name: node
@@ -1016,6 +1021,7 @@ spec:
 ---
 name: Window
 kind: class
+parent: EventTarget
 spec:
   properties:
     - name: document
@@ -1076,7 +1082,6 @@ spec:
           type: string
       result:
         type: string
-    - *addEventListener
 ---
 name: CharacterData
 kind: interface
@@ -1104,3 +1109,19 @@ spec:
     - name: assignedSlot
       # type: HTMLSlotElement
       type: Element
+---
+name: EventSource
+kind: class
+parent: EventTarget
+spec:
+  properties:
+    - name: readyState
+      type: int
+    - name: url
+      type: string
+      name_override: URL
+    - name: withCredentials
+      type: bool
+  method:
+    - name: close
+

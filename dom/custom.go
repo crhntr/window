@@ -169,7 +169,7 @@ func (options FocusOptions) SetFocusVisible(value bool) FocusOptions {
 // StringMap is a DOMStringMap
 type StringMap js.Value
 
-func wrapDOMStringMap(value js.Value) StringMap { return StringMap(value) }
+func wrapStringMap(value js.Value) StringMap { return StringMap(value) }
 
 func (m StringMap) Get(name string) string { return js.Value(m).Get(name).String() }
 func (m StringMap) Set(name, value string) { js.Value(m).Set(name, value) }
