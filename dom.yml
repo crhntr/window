@@ -160,7 +160,7 @@ kind: class
 spec:
   properties:
     - name: data
-      type: js.Value
+      type: string
     - name: origin
       type: string
     - name: lastEventId
@@ -1122,6 +1122,6 @@ spec:
       name_override: URL
     - name: withCredentials
       type: bool
-  method:
+  methods:
     - name: close
 

@@ -411,8 +411,8 @@ func (val MessageEvent) TimeStamp() time.Time {
 func (val MessageEvent) Type() string {
 	return js.Value(val).Get("type").String()
 }
-func (val MessageEvent) Data() js.Value {
-	return js.Value(val).Get("data")
+func (val MessageEvent) Data() string {
+	return js.Value(val).Get("data").String()
 }
 func (val MessageEvent) Origin() string {
 	return js.Value(val).Get("origin").String()
@@ -2384,4 +2384,7 @@ func (val EventSource) RemoveEventListener(eventType string, listener js.Func, o
 }
 func (val EventSource) DispatchEvent(event Event) bool {
 	return js.Value(val).Call("dispatchEvent", event).Bool()
+}
+func (val EventSource) Close()  {
+	js.Value(val).Call("close")
 }

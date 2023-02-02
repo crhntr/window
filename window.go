@@ -3,6 +3,7 @@
 package window
 
 import (
+	"reflect"
 	"syscall/js"
 
 	"github.com/crhntr/window/dom"
@@ -28,25 +29,18 @@ func WrapEventListenerFunc[E dom.EventValue](fn func(event E)) js.Func {
 }
 
 func NewEventSource(url string, withCredentials bool) dom.EventSource {
-	config := js.Global().Get("Object").New()
-	config.Set("withCredentials", withCredentials)
-	return dom.EventSource(js.Global().Get("EventSource").New(url))
+	return dom.EventSource(js.Global().Get("EventSource").New(url, map[string]interface{}{"withCredentials": withCredentials}))
 }
 
 func ConsoleLog(a ...any) {
+	jsV := reflect.TypeOf(js.Value{})
 	for i := range a {
-		switch x := a[i].(type) {
-		case dom.Text:
-			a[i] = js.Value(x)
-		case dom.HTMLElement:
-			a[i] = js.Value(x)
-		case dom.SVGElement:
-			a[i] = js.Value(x)
-		case dom.GenericEvent:
-			a[i] = js.Value(x)
-		case dom.UIEvent:
-			a[i] = js.Value(x)
-			// TODO: generate a function for this switch
+		if _, ok := a[i].(js.Value); ok {
+			continue
+		}
+		va := reflect.ValueOf(a[i])
+		if va.CanConvert(jsV) {
+			a[i] = va.Convert(jsV).Interface().(js.Value)
 		}
 	}
 	js.Global().Get("console").Call("log", a...)
