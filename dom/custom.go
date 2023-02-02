@@ -184,6 +184,9 @@ var (
 )
 
 func wrapNode(value js.Value) Node {
+	if value.IsNull() {
+		return nil
+	}
 	switch {
 	case value.InstanceOf(htmlElementPrototype):
 		return wrapHTMLElement(value)
@@ -202,13 +205,16 @@ func wrapNode(value js.Value) Node {
 }
 
 func wrapElement(value js.Value) Element {
+	if value.IsNull() {
+		return nil
+	}
 	switch {
 	case value.InstanceOf(htmlElementPrototype):
 		return wrapHTMLElement(value)
 	case value.InstanceOf(svgElementPrototype):
 		return wrapSVGElement(value)
 	default:
-		panic("failed to wrap Element")
+		panic("failed to wrap Element type")
 	}
 }
 

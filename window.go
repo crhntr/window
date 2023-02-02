@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package window
 
 import (
@@ -28,6 +30,8 @@ func WrapEventListenerFunc[E dom.EventValue](fn func(event E)) js.Func {
 func ConsoleLog(a ...any) {
 	for i := range a {
 		switch x := a[i].(type) {
+		case dom.Text:
+			a[i] = js.Value(x)
 		case dom.HTMLElement:
 			a[i] = js.Value(x)
 		case dom.SVGElement:
