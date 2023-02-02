@@ -27,6 +27,12 @@ func WrapEventListenerFunc[E dom.EventValue](fn func(event E)) js.Func {
 	})
 }
 
+func NewEventSource(url string, withCredentials bool) dom.EventSource {
+	config := js.Global().Get("Object").New()
+	config.Set("withCredentials", withCredentials)
+	return dom.EventSource(js.Global().Get("EventSource").New(url))
+}
+
 func ConsoleLog(a ...any) {
 	for i := range a {
 		switch x := a[i].(type) {

@@ -7,6 +7,32 @@ import (
 
 //go:generate go run ../internal/generate ../dom.yml
 
+type wrappedJSValue interface {
+	Event |
+		GenericEvent |
+		UIEvent |
+		MouseEvent |
+		FocusEvent |
+		InputEvent |
+		MessageEvent |
+		StaticRange |
+		SecurityPolicyViolationEvent |
+		HTMLIFrameElement |
+		DOMRect |
+		NodeList |
+		HTMLCollection |
+		DOMTokenList |
+		HTMLElement |
+		CSSStyleDeclaration |
+		DocumentFragment |
+		SVGElement |
+		Document |
+		Window |
+		Text |
+		EventSource |
+		StringMap
+}
+
 type AdjacentPosition string
 
 // noinspection SpellCheckingInspection
@@ -266,7 +292,8 @@ func SetValue(el Element, value string) {
 //)
 
 type EventValue interface {
-	UIEvent |
+	Event |
+		UIEvent |
 		FocusEvent |
 		InputEvent |
 		SecurityPolicyViolationEvent |
@@ -331,4 +358,29 @@ func wrapOptions[O interface {
 		FocusOptions
 }](o O) js.Value {
 	return js.ValueOf((map[string]any)(o))
+}
+
+func makeSingleArgFunc[T EventValue](fn func(p T)) js.Func {
+	return js.FuncOf(func(this js.Value, args []js.Value) any {
+		fn(T(args[0]))
+		return nil
+	})
+}
+
+func registerEventHandler[T EventValue](source EventSource, messageName string, fn func(p T)) js.Func {
+	jsFn := makeSingleArgFunc(fn)
+	source.AddEventListener(messageName, jsFn, AddEventListenerOptions{}, false)
+	return jsFn
+}
+
+func (val EventSource) OnError(handlerFunc func(err Event)) js.Func {
+	return registerEventHandler(val, "error", handlerFunc)
+}
+
+func (val EventSource) OnMessage(handlerFunc func(event MessageEvent)) js.Func {
+	return registerEventHandler(val, "message", handlerFunc)
+}
+
+func (val EventSource) OnOpen(handlerFunc func(event Event)) js.Func {
+	return registerEventHandler(val, "open", handlerFunc)
 }

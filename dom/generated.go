@@ -52,7 +52,7 @@ func (val Event) StopPropagation()  {
 
 type EventTarget interface {
 	AddEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)
-	RemoveEventListener(eventType string, listener func(event Event), options AddEventListenerOptions, useCapture bool)
+	RemoveEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)
 	DispatchEvent(event Event) bool
 }
 type GenericEvent js.Value
@@ -552,7 +552,7 @@ type Node interface {
 	TextContent() string
 	SetTextContent(textContent string)
 	AddEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)
-	RemoveEventListener(eventType string, listener func(event Event), options AddEventListenerOptions, useCapture bool)
+	RemoveEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)
 	DispatchEvent(event Event) bool
 	AppendChild(aChild Node) Node
 	CloneNode(deep bool) Node
@@ -611,7 +611,7 @@ type Element interface {
 	Slot() string
 	TagName() string
 	AddEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)
-	RemoveEventListener(eventType string, listener func(event Event), options AddEventListenerOptions, useCapture bool)
+	RemoveEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)
 	DispatchEvent(event Event) bool
 	AppendChild(aChild Node) Node
 	CloneNode(deep bool) Node
@@ -865,7 +865,7 @@ func (val HTMLIFrameElement) SetTitle(title string) {
 func (val HTMLIFrameElement) AddEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)  {
 	js.Value(val).Call("addEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
-func (val HTMLIFrameElement) RemoveEventListener(eventType string, listener func(event Event), options AddEventListenerOptions, useCapture bool)  {
+func (val HTMLIFrameElement) RemoveEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)  {
 	js.Value(val).Call("removeEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
 func (val HTMLIFrameElement) DispatchEvent(event Event) bool {
@@ -1330,7 +1330,7 @@ func (val HTMLElement) SetTitle(title string) {
 func (val HTMLElement) AddEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)  {
 	js.Value(val).Call("addEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
-func (val HTMLElement) RemoveEventListener(eventType string, listener func(event Event), options AddEventListenerOptions, useCapture bool)  {
+func (val HTMLElement) RemoveEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)  {
 	js.Value(val).Call("removeEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
 func (val HTMLElement) DispatchEvent(event Event) bool {
@@ -1585,7 +1585,7 @@ func (val DocumentFragment) SetTextContent(textContent string) {
 func (val DocumentFragment) AddEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)  {
 	js.Value(val).Call("addEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
-func (val DocumentFragment) RemoveEventListener(eventType string, listener func(event Event), options AddEventListenerOptions, useCapture bool)  {
+func (val DocumentFragment) RemoveEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)  {
 	js.Value(val).Call("removeEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
 func (val DocumentFragment) DispatchEvent(event Event) bool {
@@ -1762,7 +1762,7 @@ func (val SVGElement) TagName() string {
 func (val SVGElement) AddEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)  {
 	js.Value(val).Call("addEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
-func (val SVGElement) RemoveEventListener(eventType string, listener func(event Event), options AddEventListenerOptions, useCapture bool)  {
+func (val SVGElement) RemoveEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)  {
 	js.Value(val).Call("removeEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
 func (val SVGElement) DispatchEvent(event Event) bool {
@@ -2056,7 +2056,7 @@ func (val Document) URL() string {
 func (val Document) AddEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)  {
 	js.Value(val).Call("addEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
-func (val Document) RemoveEventListener(eventType string, listener func(event Event), options AddEventListenerOptions, useCapture bool)  {
+func (val Document) RemoveEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)  {
 	js.Value(val).Call("removeEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
 func (val Document) DispatchEvent(event Event) bool {
@@ -2170,7 +2170,7 @@ func (val Window) Parent() Window {
 func (val Window) AddEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)  {
 	js.Value(val).Call("addEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
-func (val Window) RemoveEventListener(eventType string, listener func(event Event), options AddEventListenerOptions, useCapture bool)  {
+func (val Window) RemoveEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)  {
 	js.Value(val).Call("removeEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
 func (val Window) DispatchEvent(event Event) bool {
@@ -2224,7 +2224,7 @@ type CharacterData interface {
 	NextElementSibling() Element
 	PreviousElementSibling() Element
 	AddEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)
-	RemoveEventListener(eventType string, listener func(event Event), options AddEventListenerOptions, useCapture bool)
+	RemoveEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)
 	DispatchEvent(event Event) bool
 	AppendChild(aChild Node) Node
 	CloneNode(deep bool) Node
@@ -2310,7 +2310,7 @@ func (val Text) AssignedSlot() Element {
 func (val Text) AddEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)  {
 	js.Value(val).Call("addEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
-func (val Text) RemoveEventListener(eventType string, listener func(event Event), options AddEventListenerOptions, useCapture bool)  {
+func (val Text) RemoveEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)  {
 	js.Value(val).Call("removeEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
 func (val Text) DispatchEvent(event Event) bool {
@@ -2379,7 +2379,7 @@ func (val EventSource) WithCredentials() bool {
 func (val EventSource) AddEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)  {
 	js.Value(val).Call("addEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
-func (val EventSource) RemoveEventListener(eventType string, listener func(event Event), options AddEventListenerOptions, useCapture bool)  {
+func (val EventSource) RemoveEventListener(eventType string, listener js.Func, options AddEventListenerOptions, useCapture bool)  {
 	js.Value(val).Call("removeEventListener", eventType, listener, wrapOptions(options), useCapture)
 }
 func (val EventSource) DispatchEvent(event Event) bool {
