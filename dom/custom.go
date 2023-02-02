@@ -384,3 +384,7 @@ func (val EventSource) OnMessage(handlerFunc func(event MessageEvent)) js.Func {
 func (val EventSource) OnOpen(handlerFunc func(event Event)) js.Func {
 	return registerEventHandler(val, "open", handlerFunc)
 }
+
+func (val EventSource) On(event string, handlerFunc func(event MessageEvent)) js.Func {
+	return registerEventHandler(val, event, handlerFunc)
+}
