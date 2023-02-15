@@ -14,6 +14,7 @@ type wrappedJSValue interface {
 		MouseEvent |
 		FocusEvent |
 		InputEvent |
+		KeyboardEvent |
 		MessageEvent |
 		StaticRange |
 		SecurityPolicyViolationEvent |
@@ -298,7 +299,8 @@ type EventValue interface {
 		InputEvent |
 		SecurityPolicyViolationEvent |
 		MessageEvent |
-		GenericEvent
+		GenericEvent |
+		KeyboardEvent
 }
 
 func millisecondsSinceEpocToTime(val js.Value) time.Time {

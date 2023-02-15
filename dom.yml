@@ -167,6 +167,34 @@ spec:
       name_override: lastEventID
       type: string
 ---
+name: KeyboardEvent
+parent: UIEvent
+kind: class
+spec:
+  properties:
+    - name: altKey
+      type: bool
+    - name: code
+      type: string
+    - name: ctrlKey
+      type: bool
+    - name: isComposing
+      type: bool
+    - name: key
+      type: string
+    - name: location
+      type: string
+    - name: metaKey
+      type: bool
+    - name: repeat
+      type: bool
+    - name: shiftKey
+      type: bool
+  methods:
+    - name: getModifierState
+      result:
+        type: bool
+---
 name: AbstractRange
 kind: interface
 spec:

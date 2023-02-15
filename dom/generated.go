@@ -430,6 +430,87 @@ func (val MessageEvent) StopPropagation()  {
 	js.Value(val).Call("stopPropagation")
 }
 
+type KeyboardEvent js.Value
+
+func wrapKeyboardEvent(value js.Value) KeyboardEvent {
+	return KeyboardEvent(value)
+}
+func (val KeyboardEvent) Bubbles() bool {
+	return js.Value(val).Get("bubbles").Bool()
+}
+func (val KeyboardEvent) Cancelable() bool {
+	return js.Value(val).Get("cancelable").Bool()
+}
+func (val KeyboardEvent) Composed() bool {
+	return js.Value(val).Get("composed").Bool()
+}
+func (val KeyboardEvent) CurrentTarget() js.Value {
+	return js.Value(val).Get("currentTarget")
+}
+func (val KeyboardEvent) DefaultPrevented() bool {
+	return js.Value(val).Get("defaultPrevented").Bool()
+}
+func (val KeyboardEvent) EventPhase() EventPhase {
+	return wrapEventPhase(js.Value(val).Get("eventPhase"))
+}
+func (val KeyboardEvent) IsTrusted() bool {
+	return js.Value(val).Get("isTrusted").Bool()
+}
+func (val KeyboardEvent) Target() js.Value {
+	return js.Value(val).Get("target")
+}
+func (val KeyboardEvent) TimeStamp() time.Time {
+	return millisecondsSinceEpocToTime(js.Value(val).Get("timeStamp"))
+}
+func (val KeyboardEvent) Type() string {
+	return js.Value(val).Get("type").String()
+}
+func (val KeyboardEvent) View() js.Value {
+	return js.Value(val).Get("view")
+}
+func (val KeyboardEvent) Detail() int {
+	return js.Value(val).Get("detail").Int()
+}
+func (val KeyboardEvent) AltKey() bool {
+	return js.Value(val).Get("altKey").Bool()
+}
+func (val KeyboardEvent) Code() string {
+	return js.Value(val).Get("code").String()
+}
+func (val KeyboardEvent) CtrlKey() bool {
+	return js.Value(val).Get("ctrlKey").Bool()
+}
+func (val KeyboardEvent) IsComposing() bool {
+	return js.Value(val).Get("isComposing").Bool()
+}
+func (val KeyboardEvent) Key() string {
+	return js.Value(val).Get("key").String()
+}
+func (val KeyboardEvent) Location() string {
+	return js.Value(val).Get("location").String()
+}
+func (val KeyboardEvent) MetaKey() bool {
+	return js.Value(val).Get("metaKey").Bool()
+}
+func (val KeyboardEvent) Repeat() bool {
+	return js.Value(val).Get("repeat").Bool()
+}
+func (val KeyboardEvent) ShiftKey() bool {
+	return js.Value(val).Get("shiftKey").Bool()
+}
+func (val KeyboardEvent) PreventDefault()  {
+	js.Value(val).Call("preventDefault")
+}
+func (val KeyboardEvent) StopImmediatePropagation()  {
+	js.Value(val).Call("stopImmediatePropagation")
+}
+func (val KeyboardEvent) StopPropagation()  {
+	js.Value(val).Call("stopPropagation")
+}
+func (val KeyboardEvent) GetModifierState() bool {
+	return js.Value(val).Call("getModifierState").Bool()
+}
+
 type AbstractRange interface {
 	Collapsed() bool
 	EndContainer() Node
