@@ -63,7 +63,7 @@ func main() {
 		panic(err)
 	}
 
-	generatedFile, err := os.Create(filepath.Join("generated.go"))
+	generatedFile, err := os.Create(filepath.Join("generated_js_wasm.go"))
 	if err != nil {
 		panic(err)
 	}

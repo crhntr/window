@@ -76,7 +76,7 @@ func (options ScrollOptions) SetTop(value int) ScrollOptions {
 }
 
 func (options ScrollOptions) SetLeft(value int) ScrollOptions {
-	options["top"] = value
+	options["left"] = value
 	return options
 }
 
